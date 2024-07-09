@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { CreateSessionOptions, GetRequestOptions, PostRequestOptions } from "scrappey-wrapper-typed";
 
 class Scrappey {
 
@@ -11,10 +12,10 @@ class Scrappey {
 
     /**
      * Creates a session
-     * @param {import('scrappey-wrapper').CreateSessionOptions} data 
-     * @returns 
+     * @param {CreateSessionOptions} data 
+     * @returns {Promise<any>}
      */
-    async createSession(data) {
+    async createSession(data: CreateSessionOptions): Promise<any> {
         return await this.sendRequest({
             endpoint: "sessions.create",
             ...data
@@ -23,7 +24,7 @@ class Scrappey {
 
     /**
      * Destroys a session
-     * @param {*} session 
+     * @param {*} session
      * @returns 
      */
     async destroySession(session) {
@@ -35,10 +36,10 @@ class Scrappey {
 
     /**
      * Send a GET request
-     * @param {*} data 
-     * @returns 
+     * @param {GetRequestOptions} data 
+     * @returns {Promise<any>}
      */
-    async get(data) {
+    async get(data: GetRequestOptions) {
         const { url } = data;
         
         if (!url) {
@@ -53,10 +54,10 @@ class Scrappey {
 
     /**
      * Sends a POST request
-     * @param {import('scrappey-wrapper').PostRequestOptions} data 
-     * @returns 
+     * @param {PostRequestOptions} data 
+     * @returns {Promise<any>}
      */
-    async post(data) {
+    async post(data: PostRequestOptions) {
         if (data?.customHeaders?.content_type === "application/json") {
             data.postData = JSON.stringify(data.postData);
         }
