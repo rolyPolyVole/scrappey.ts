@@ -1,4 +1,4 @@
-declare module "scrappey-wrapper-types" {
+declare module "scrappey-wrapper-typed" {
     export type KeyedObject = {
         [key: string]: any
     }
