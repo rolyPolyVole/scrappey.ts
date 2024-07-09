@@ -116,7 +116,7 @@ declare module "scrappey-wrapper-typed" {
         | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
         | Omit<GetRequestOptions, "customHeaders"> & { customHeaders?: any } & { postData: string }
 
-    export class Scrappey {
+    export default class Scrappey {
         public constructor(apiKey: string);
 
         /**
