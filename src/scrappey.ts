@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { CreateSessionOptions, GetRequestOptions, PostRequestOptions } from "scrappey-wrapper-typed";
+import { CreateSessionOptions, GetRequestOptions, GetResponseData, PostRequestOptions } from "scrappey-wrapper-typed";
 
 class Scrappey {
 
@@ -39,7 +39,7 @@ class Scrappey {
      * @param {GetRequestOptions} data 
      * @returns {Promise<any>}
      */
-    async get(data: GetRequestOptions): Promise<any> {
+    async get(data: GetRequestOptions): Promise<GetResponseData> {
         const { url } = data;
         
         if (!url) {
