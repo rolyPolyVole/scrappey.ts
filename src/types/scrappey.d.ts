@@ -136,13 +136,13 @@ declare module "scrappey-wrapper-typed" {
             cookieString?: string;
             response?: string;
             type?: string;
+            javascriptReturn?: any[];
         }
         videoUrl?: string;
         timeElapsed: number;
         data: string;
         session: string;
         request_uuid: string;
-        javascript_return?: any[];
         [key: string]: any;
     }
 
