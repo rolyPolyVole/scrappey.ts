@@ -1,4 +1,4 @@
-const Scrappey = require("./wrapper/scrappey.js");
+import Scrappey from "./scrappey";
 
 const initialize = new Scrappey("API_KEY_HERE");
 
@@ -43,7 +43,7 @@ async function run() {
     const post = await initialize.post({
         session: session,
         url: 'https://httpbin.rs/post',
-        postData: "test=test&test2=test2",
+        postData: "test=test&test2=test2"
     })
 
     //Sending a post with JSON data
