@@ -50,6 +50,13 @@ declare module "scrappey-wrapper-typed" {
         path: string;
     }
 
+    export type ActiveCookie = Cookie & {
+        expires: number;
+        httpOnly: boolean;
+        secure: boolean;
+        sameSite: string;
+    }
+
     export type CreateSessionOptions = {
         session?: string;
         proxy?: string;
@@ -116,6 +123,26 @@ declare module "scrappey-wrapper-typed" {
         | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
         | Omit<GetRequestOptions, "customHeaders"> & { customHeaders?: any } & { postData: string }
 
+    export type GetResponseData = {
+        solution: {
+            verified: boolean;
+            currentUrl: string;
+            userAgent: string;
+            innerText: string;
+            localStorageData: {
+                [key: string]: string;
+            }
+            cookies: ActiveCookie[];
+            cookieString: string;
+            response: string;
+            type: string;
+        }
+        timeElapsed: number;
+        data: string;
+        session: string;
+        request_uuid: string;
+    }
+
     export default class Scrappey {
         public constructor(apiKey: string);
 
@@ -138,7 +165,7 @@ declare module "scrappey-wrapper-typed" {
          * @param data 
          * @returns 
          */
-        public get(data: GetRequestOptions): Promise<any>;
+        public get(data: GetRequestOptions): Promise<GetResponseData>;
 
         /**
          * Sends a POST request
