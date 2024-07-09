@@ -3,7 +3,7 @@
     "version": "1.0.8",
     "description": "",
     "types": "./types/scrappey.d.ts",
-    "main": "main.js",
+    "main": "dist/main.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },

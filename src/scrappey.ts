@@ -1,10 +1,12 @@
-const axios = require('axios').default;
+import axios, { AxiosRequestConfig } from "axios";
 
 class Scrappey {
 
-    constructor(apiKey) {
+    public readonly apiKey: string;
+    public readonly baseUrl = "https://publisher.scrappey.com/api/v1";
+
+    constructor(apiKey: string) {
         this.apiKey = apiKey;
-        this.baseUrl = 'https://publisher.scrappey.com/api/v1';
     }
 
     /**
@@ -87,7 +89,7 @@ class Scrappey {
 
         const url = `${this.baseUrl}?key=${this.apiKey}`;
 
-        const options = {
+        const options: AxiosRequestConfig = {
             url,
             method: "POST",
             headers: {
@@ -96,11 +98,12 @@ class Scrappey {
             data: {
                 cmd: endpoint,
                 ...dataOptions
-            }
+            },
+            timeout: 5 * 60 * 1000
         };
 
         try {
-            const response = await axios(options, { timeout: 5 * 60 * 1000 });
+            const response = await axios(url, options);
             return response.data;
         } catch (error) {
             throw error;
@@ -108,4 +111,4 @@ class Scrappey {
     }
 }
 
-module.exports = Scrappey;
+export default Scrappey;
