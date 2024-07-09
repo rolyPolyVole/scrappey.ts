@@ -1,4 +1,4 @@
-import Scrappey from "./scrappey";
+import Scrappey from "./scrappey.js";
 
 const initialize = new Scrappey("API_KEY_HERE");
 
