@@ -1,3 +1,3 @@
-const Scrappey = require("./wrapper/scrappey.js");
+const Scrappey = require("./src/scrappey.js");
 
 module.exports = Scrappey;
