@@ -27,6 +27,9 @@ declare module "scrappey-wrapper" {
          * Session UUID
          */
         readonly session: string;
+        /**
+         * No idea what this is, it exists though
+         */
         readonly fingerprint: any;
     }
 
@@ -37,7 +40,7 @@ declare module "scrappey-wrapper" {
         path: string;
     }
 
-    export type RequestType = "browser"|"request";
+    export type RequestType = "browser" | "request";
 
     export type RequestOptions = {
         endpoint: string;
@@ -88,11 +91,12 @@ declare module "scrappey-wrapper" {
         properties?: string;
         video?: boolean;
         browserActions?: BrowserAction[];
+        [key: string]: any;
     }
 
-    export type PostRequestOptions = GetRequestOptions & {
-        postData: string;
-    }
+    export type PostRequestOptions = 
+        | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
+        | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: any } & { postData: string }
 
     export class Scrappey {
         public constructor(apiKey: string);
