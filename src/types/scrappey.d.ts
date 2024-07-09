@@ -32,16 +32,6 @@ declare module "scrappey-wrapper-typed" {
         AfterLoad = "afterload"
     }
 
-    export type CreateSessionOptions = {
-        session?: string;
-        proxy?: string;
-        whitelistedDomains?: string[];
-        datacenter?: boolean;
-        browser?: BrowserData[];
-        operatingSystem?: OSOption;
-        device?: DeviceOption;
-    }
-
     export type Session = {
         /**
          * Session UUID
@@ -58,6 +48,16 @@ declare module "scrappey-wrapper-typed" {
         value: string;
         domain: string;
         path: string;
+    }
+
+    export type CreateSessionOptions = {
+        session?: string;
+        proxy?: string;
+        whitelistedDomains?: string[];
+        datacenter?: boolean;
+        browser?: BrowserData[];
+        operatingSystem?: OSOption;
+        device?: DeviceOption;
     }
 
     export type RequestOptions = {
@@ -114,7 +114,7 @@ declare module "scrappey-wrapper-typed" {
 
     export type PostRequestOptions = 
         | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
-        | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: any } & { postData: string }
+        | Omit<GetRequestOptions, "customHeaders"> & { customHeaders?: any } & { postData: string }
 
     export class Scrappey {
         public constructor(apiKey: string);
