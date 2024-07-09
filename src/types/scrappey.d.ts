@@ -126,21 +126,24 @@ declare module "scrappey-wrapper-typed" {
     export type GetResponseData = {
         solution: {
             verified: boolean;
-            currentUrl: string;
-            userAgent: string;
-            innerText: string;
-            localStorageData: {
+            currentUrl?: string;
+            userAgent?: string;
+            innerText?: string;
+            localStorageData?: {
                 [key: string]: string;
             }
-            cookies: ActiveCookie[];
-            cookieString: string;
-            response: string;
-            type: string;
+            cookies?: ActiveCookie[];
+            cookieString?: string;
+            response?: string;
+            type?: string;
         }
+        videoUrl?: string;
         timeElapsed: number;
         data: string;
         session: string;
         request_uuid: string;
+        javascript_return?: any[];
+        [key: string]: any;
     }
 
     export default class Scrappey {
