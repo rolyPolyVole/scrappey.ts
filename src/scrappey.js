@@ -9,14 +9,14 @@ class Scrappey {
 
     /**
      * Creates a session
-     * @param {*} session 
+     * @param {import('scrappey-wrapper').CreateSessionOptions} data 
      * @returns 
      */
     async createSession(data) {
         return await this.sendRequest({
             endpoint: "sessions.create",
             ...data
-        })
+        });
     }
 
     /**
@@ -28,7 +28,7 @@ class Scrappey {
         return await this.sendRequest({
             endpoint: "sessions.destroy",
             session: session
-        })
+        });
     }
 
     /**
@@ -37,49 +37,52 @@ class Scrappey {
      * @returns 
      */
     async get(data) {
-
-        const { url } = data
+        const { url } = data;
+        
         if (!url) {
-            throw Error(`URL is required to send a request`)
+            throw new Error(`URL is required to send a request`);
         }
 
         return await this.sendRequest({
             endpoint: "request.get",
             ...data
-        })
+        });
     }
 
     /**
      * Sends a POST request
-     * @param {*} data 
+     * @param {import('scrappey-wrapper').PostRequestOptions} data 
      * @returns 
      */
     async post(data) {
+        if (data?.customHeaders?.content_type === "application/json") {
+            data.postData = JSON.stringify(data.postData);
+        }
+
         return await this.sendRequest({
             endpoint: "request.post",
             ...data
-        })
+        });
     }
 
     /**
      * Sends the actual request to scrappey as a proxy
-     * @param {*} dataOptions 
+     * @param {any} dataOptions 
      * @returns 
      */
     async sendRequest(dataOptions) {
-
         const { endpoint } = dataOptions;
 
         if (!endpoint) {
-            throw Error(`Endpoint is required, examples: request.get, request.post, sessions.create, sessions.destroy`)
+            throw new Error(`Endpoint is required, examples: request.get, request.post, sessions.create, sessions.destroy`);
         }
 
         if (!dataOptions) {
-            throw Error(`Data is required`)
+            throw new Error(`Data is required`);
         }
 
         if (!this.apiKey) {
-            throw Error(`API Key is required`)
+            throw new Error(`API Key is required`);
         }
 
         const url = `${this.baseUrl}?key=${this.apiKey}`;
@@ -98,14 +101,11 @@ class Scrappey {
 
         try {
             const response = await axios(options, { timeout: 5 * 60 * 1000 });
-            return response.data
-        } catch (exp) {
-            throw exp
+            return response.data;
+        } catch (error) {
+            throw error;
         }
-
     }
-
-
 }
 
 module.exports = Scrappey;

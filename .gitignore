@@ -5,6 +5,12 @@
 /tmp
 /out-tsc
 
+# gitignore
+.gitignore
+
+# configs
+package-lock.json
+
 # Runtime data
 pids
 *.pid
