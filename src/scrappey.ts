@@ -24,10 +24,10 @@ class Scrappey {
 
     /**
      * Destroys a session
-     * @param {*} session
-     * @returns 
+     * @param {string} session
+     * @returns {Promise<any>}
      */
-    async destroySession(session) {
+    async destroySession(session: string): Promise<any> {
         return await this.sendRequest({
             endpoint: "sessions.destroy",
             session: session
@@ -39,7 +39,7 @@ class Scrappey {
      * @param {GetRequestOptions} data 
      * @returns {Promise<any>}
      */
-    async get(data: GetRequestOptions) {
+    async get(data: GetRequestOptions): Promise<any> {
         const { url } = data;
         
         if (!url) {
@@ -57,7 +57,7 @@ class Scrappey {
      * @param {PostRequestOptions} data 
      * @returns {Promise<any>}
      */
-    async post(data: PostRequestOptions) {
+    async post(data: PostRequestOptions): Promise<any> {
         if (data?.customHeaders?.content_type === "application/json") {
             data.postData = JSON.stringify(data.postData);
         }
@@ -73,7 +73,7 @@ class Scrappey {
      * @param {any} dataOptions 
      * @returns 
      */
-    async sendRequest(dataOptions) {
+    async sendRequest(dataOptions: any) {
         const { endpoint } = dataOptions;
 
         if (!endpoint) {
