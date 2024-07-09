@@ -2,7 +2,7 @@
     "name": "scrappey-wrapper-typed",
     "version": "1.0.11",
     "description": "An API for web scraping.",
-    "types": "src/scrappey.d.ts",
+    "types": "src/types/scrappey.d.ts",
     "main": "dist/scrappey.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
