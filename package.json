@@ -1,6 +1,6 @@
 {
     "name": "scrappey-wrapper-typed",
-    "version": "1.0.14",
+    "version": "1.0.16",
     "description": "A Typescript-based wrapper of the Scrappey API for web scraping.",
     "types": "src/types/scrappey.d.ts",
     "main": "dist/scrappey.js",
