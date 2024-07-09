@@ -9,8 +9,28 @@ declare module "scrappey-wrapper-typed" {
         maxVersion?: number;
     }
 
-    export type DeviceOptions = "desktop" | "mobile";
-    export type OSOptions = "windows" | "macos" | "linux" | "android" | "ios";
+    export enum DeviceOption {
+        Desktop = "desktop",
+        Mobile = "mobile"
+    }
+
+    export enum OSOption {
+        Windows = "windows",
+        MacOS = "macos",
+        Linux = "linux",
+        Android = "android",
+        IOS = "ios"
+    }
+
+    export enum RequestType {
+        Browser = "browser",
+        Request = "request"
+    }
+
+    export enum LoadType {
+        BeforeLoad = "beforeload",
+        AfterLoad = "afterload"
+    }
 
     export type CreateSessionOptions = {
         session?: string;
@@ -18,8 +38,8 @@ declare module "scrappey-wrapper-typed" {
         whitelistedDomains?: string[];
         datacenter?: boolean;
         browser?: BrowserData[];
-        operatingSystem?: OSOptions;
-        device?: DeviceOptions;
+        operatingSystem?: OSOption;
+        device?: DeviceOption;
     }
 
     export type Session = {
@@ -40,14 +60,12 @@ declare module "scrappey-wrapper-typed" {
         path: string;
     }
 
-    export type RequestType = "browser" | "request";
-
     export type RequestOptions = {
         endpoint: string;
     }
 
     export type BaseBrowserAction = {
-        when?: "beforeload" | "afterload"
+        when?: LoadType
     }
 
     export type WaitableAction = {
