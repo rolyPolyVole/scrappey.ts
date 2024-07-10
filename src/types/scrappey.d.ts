@@ -98,40 +98,138 @@ declare module "scrappey-wrapper-typed" {
         | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: "custom", inputSelector: string, clickSelector?: string }
         | { type: "execute_js", code: string }
         | ElementInteractionAction & { type: "scroll", repeat?: number, delayMs: number }
+        | { type: "keyboard", value: "tab" | "enter" | "space" | "arrowdown" | "arrowup" | "arrowleft" | "arrowright" }
 
-    export type ProxyCountry = 
-        | "UnitedStates" | "Canada" | "Afghanistan" | "Albania"
-        | "Algeria" | "Argentina" | "Armenia" | "Aruba"
-        | "Australia" | "Austria" | "Azerbaijan" | "Bahamas"
-        | "Bahrain" | "Bangladesh" | "Belarus" | "Belgium"
-        | "BosniaandHerzegovina" | "Brazil" | "BritishVirginIslands" | "Brunei"
-        | "Bulgaria" | "Cambodia" | "Cameroon" | "Chile"
-        | "China" | "Colombia" | "CostaRica" | "Croatia"
-        | "Cuba" | "Cyprus" | "Czechia" | "Denmark"
-        | "DominicanRepublic" | "Ecuador" | "Egypt" | "ElSalvador"
-        | "Estonia" | "Ethiopia" | "Finland" | "France"
-        | "Georgia" | "Germany" | "Ghana" | "Greece"
-        | "Guatemala" | "Guyana" | "HashemiteKingdomofJordan" | "HongKong"
-        | "Hungary" | "India" | "Indonesia" | "Iran"
-        | "Iraq" | "Ireland" | "Israel" | "Italy"
-        | "Jamaica" | "Japan" | "Kazakhstan" | "Kenya"
-        | "Kosovo" | "Kuwait" | "Latvia" | "Liechtenstein"
-        | "Luxembourg" | "Macedonia" | "Madagascar" | "Malaysia"
-        | "Mauritius" | "Mexico" | "Mongolia" | "Montenegro"
-        | "Morocco" | "Mozambique" | "Myanmar" | "Nepal"
-        | "Netherlands" | "NewZealand" | "Nigeria" | "Norway"
-        | "Oman" | "Pakistan" | "Palestine" | "Panama"
-        | "PapuaNewGuinea" | "Paraguay" | "Peru" | "Philippines"
-        | "Poland" | "Portugal" | "PuertoRico" | "Qatar"
-        | "RepublicofLithuania" | "RepublicofMoldova" | "Romania" | "Russia"
-        | "SaudiArabia" | "Senegal" | "Serbia" | "Seychelles"
-        | "Singapore" | "Slovakia" | "Slovenia" | "Somalia"
-        | "SouthAfrica" | "SouthKorea" | "Spain" | "SriLanka"
-        | "Sudan" | "Suriname" | "Sweden" | "Switzerland"
-        | "Syria" | "Taiwan" | "Tajikistan" | "Thailand"
-        | "TrinidadandTobago" | "Tunisia" | "Turkey" | "Uganda"
-        | "Ukraine" | "UnitedArabEmirates" | "UnitedKingdom" | "Uzbekistan"
-        | "Venezuela" | "Vietnam" | "Zambia"
+    export enum ProxyCountry {
+        UnitedStates = "UnitedStates",
+        Canada = "Canada",
+        Afghanistan = "Afghanistan",
+        Albania = "Albania",
+        Algeria = "Algeria",
+        Argentina = "Argentina",
+        Armenia = "Armenia",
+        Aruba = "Aruba",
+        Australia = "Australia",
+        Austria = "Austria",
+        Azerbaijan = "Azerbaijan",
+        Bahamas = "Bahamas",
+        Bahrain = "Bahrain",
+        Bangladesh = "Bangladesh",
+        Belarus = "Belarus",
+        Belgium = "Belgium",
+        BosniaandHerzegovina = "BosniaandHerzegovina",
+        Brazil = "Brazil",
+        BritishVirginIslands = "BritishVirginIslands",
+        Brunei = "Brunei",
+        Bulgaria = "Bulgaria",
+        Cambodia = "Cambodia",
+        Cameroon = "Cameroon",
+        Chile = "Chile",
+        China = "China",
+        Colombia = "Colombia",
+        CostaRica = "CostaRica",
+        Croatia = "Croatia",
+        Cuba = "Cuba",
+        Cyprus = "Cyprus",
+        Czechia = "Czechia",
+        Denmark = "Denmark",
+        DominicanRepublic = "DominicanRepublic",
+        Ecuador = "Ecuador",
+        Egypt = "Egypt",
+        ElSalvador = "ElSalvador",
+        Estonia = "Estonia",
+        Ethiopia = "Ethiopia",
+        Finland = "Finland",
+        France = "France",
+        Georgia = "Georgia",
+        Germany = "Germany",
+        Ghana = "Ghana",
+        Greece = "Greece",
+        Guatemala = "Guatemala",
+        Guyana = "Guyana",
+        HashemiteKingdomofJordan = "HashemiteKingdomofJordan",
+        HongKong = "HongKong",
+        Hungary = "Hungary",
+        India = "India",
+        Indonesia = "Indonesia",
+        Iran = "Iran",
+        Iraq = "Iraq",
+        Ireland = "Ireland",
+        Israel = "Israel",
+        Italy = "Italy",
+        Jamaica = "Jamaica",
+        Japan = "Japan",
+        Kazakhstan = "Kazakhstan",
+        Kenya = "Kenya",
+        Kosovo = "Kosovo",
+        Kuwait = "Kuwait",
+        Latvia = "Latvia",
+        Liechtenstein = "Liechtenstein",
+        Luxembourg = "Luxembourg",
+        Macedonia = "Macedonia",
+        Madagascar = "Madagascar",
+        Malaysia = "Malaysia",
+        Mauritius = "Mauritius",
+        Mexico = "Mexico",
+        Mongolia = "Mongolia",
+        Montenegro = "Montenegro",
+        Morocco = "Morocco",
+        Mozambique = "Mozambique",
+        Myanmar = "Myanmar",
+        Nepal = "Nepal",
+        Netherlands = "Netherlands",
+        NewZealand = "NewZealand",
+        Nigeria = "Nigeria",
+        Norway = "Norway",
+        Oman = "Oman",
+        Pakistan = "Pakistan",
+        Palestine = "Palestine",
+        Panama = "Panama",
+        PapuaNewGuinea = "PapuaNewGuinea",
+        Paraguay = "Paraguay",
+        Peru = "Peru",
+        Philippines = "Philippines",
+        Poland = "Poland",
+        Portugal = "Portugal",
+        PuertoRico = "PuertoRico",
+        Qatar = "Qatar",
+        RepublicofLithuania = "RepublicofLithuania",
+        RepublicofMoldova = "RepublicofMoldova",
+        Romania = "Romania",
+        Russia = "Russia",
+        SaudiArabia = "SaudiArabia",
+        Senegal = "Senegal",
+        Serbia = "Serbia",
+        Seychelles = "Seychelles",
+        Singapore = "Singapore",
+        Slovakia = "Slovakia",
+        Slovenia = "Slovenia",
+        Somalia = "Somalia",
+        SouthAfrica = "SouthAfrica",
+        SouthKorea = "SouthKorea",
+        Spain = "Spain",
+        SriLanka = "SriLanka",
+        Sudan = "Sudan",
+        Suriname = "Suriname",
+        Sweden = "Sweden",
+        Switzerland = "Switzerland",
+        Syria = "Syria",
+        Taiwan = "Taiwan",
+        Tajikistan = "Tajikistan",
+        Thailand = "Thailand",
+        TrinidadandTobago = "TrinidadandTobago",
+        Tunisia = "Tunisia",
+        Turkey = "Turkey",
+        Uganda = "Uganda",
+        Ukraine = "Ukraine",
+        UnitedArabEmirates = "UnitedArabEmirates",
+        UnitedKingdom = "UnitedKingdom",
+        Uzbekistan = "Uzbekistan",
+        Venezuela = "Venezuela",
+        Vietnam = "Vietnam",
+        Zambia = "Zambia"
+    }
+        
 
     export type GetRequestOptions = {
         url: string;
