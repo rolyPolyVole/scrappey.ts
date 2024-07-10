@@ -99,13 +99,47 @@ declare module "scrappey-wrapper-typed" {
         | { type: "execute_js", code: string }
         | ElementInteractionAction & { type: "scroll", repeat?: number, delayMs: number }
 
+    export type ProxyCountry = 
+        | "UnitedStates" | "Canada" | "Afghanistan" | "Albania"
+        | "Algeria" | "Argentina" | "Armenia" | "Aruba"
+        | "Australia" | "Austria" | "Azerbaijan" | "Bahamas"
+        | "Bahrain" | "Bangladesh" | "Belarus" | "Belgium"
+        | "BosniaandHerzegovina" | "Brazil" | "BritishVirginIslands" | "Brunei"
+        | "Bulgaria" | "Cambodia" | "Cameroon" | "Chile"
+        | "China" | "Colombia" | "CostaRica" | "Croatia"
+        | "Cuba" | "Cyprus" | "Czechia" | "Denmark"
+        | "DominicanRepublic" | "Ecuador" | "Egypt" | "ElSalvador"
+        | "Estonia" | "Ethiopia" | "Finland" | "France"
+        | "Georgia" | "Germany" | "Ghana" | "Greece"
+        | "Guatemala" | "Guyana" | "HashemiteKingdomofJordan" | "HongKong"
+        | "Hungary" | "India" | "Indonesia" | "Iran"
+        | "Iraq" | "Ireland" | "Israel" | "Italy"
+        | "Jamaica" | "Japan" | "Kazakhstan" | "Kenya"
+        | "Kosovo" | "Kuwait" | "Latvia" | "Liechtenstein"
+        | "Luxembourg" | "Macedonia" | "Madagascar" | "Malaysia"
+        | "Mauritius" | "Mexico" | "Mongolia" | "Montenegro"
+        | "Morocco" | "Mozambique" | "Myanmar" | "Nepal"
+        | "Netherlands" | "NewZealand" | "Nigeria" | "Norway"
+        | "Oman" | "Pakistan" | "Palestine" | "Panama"
+        | "PapuaNewGuinea" | "Paraguay" | "Peru" | "Philippines"
+        | "Poland" | "Portugal" | "PuertoRico" | "Qatar"
+        | "RepublicofLithuania" | "RepublicofMoldova" | "Romania" | "Russia"
+        | "SaudiArabia" | "Senegal" | "Serbia" | "Seychelles"
+        | "Singapore" | "Slovakia" | "Slovenia" | "Somalia"
+        | "SouthAfrica" | "SouthKorea" | "Spain" | "SriLanka"
+        | "Sudan" | "Suriname" | "Sweden" | "Switzerland"
+        | "Syria" | "Taiwan" | "Tajikistan" | "Thailand"
+        | "TrinidadandTobago" | "Tunisia" | "Turkey" | "Uganda"
+        | "Ukraine" | "UnitedArabEmirates" | "UnitedKingdom" | "Uzbekistan"
+        | "Venezuela" | "Vietnam" | "Zambia"
+
     export type GetRequestOptions = {
         url: string;
         session?: string;
         cookiejar?: Cookie[];
         proxy?: string;
         customHeaders?: KeyedObject;
-        proxyCountry?: string;
+        proxyCountry?: ProxyCountry;
         includeImages?: boolean;
         includeLinks?: boolean;
         requestType?: RequestType;
