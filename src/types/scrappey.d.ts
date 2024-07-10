@@ -1,7 +1,11 @@
 declare module "scrappey-wrapper-typed" {
-    export type KeyedObject = {
+    type KeyedObject = {
         [key: string]: any
     }
+
+    type EnumValues<T extends KeyedObject> = 
+        | T[keyof T] 
+        | `${T[keyof T]}`
 
     export type BrowserData = {
         name: string;
@@ -34,7 +38,7 @@ declare module "scrappey-wrapper-typed" {
 
     export type Session = {
         /**
-         * Session UUID
+         * The session UUID
          */
         readonly session: string;
         /**
@@ -51,6 +55,9 @@ declare module "scrappey-wrapper-typed" {
     }
 
     export type ActiveCookie = Cookie & {
+        /**
+         * Unix timestamp
+         */
         expires: number;
         httpOnly: boolean;
         secure: boolean;
@@ -58,33 +65,94 @@ declare module "scrappey-wrapper-typed" {
     }
 
     export type CreateSessionOptions = {
+        /**
+         * A custom session UUID to assign, defaults to a random UUID
+         */
         session?: string;
+        /**
+         * A url to a proxy server, defaults to a random rotating proxy
+         */
         proxy?: string;
+        /**
+         * Whitelists certain domains
+         */
         whitelistedDomains?: string[];
+        /**
+         * If true, uses a datacenter proxy instead of a residential one
+         */
         datacenter?: boolean;
-        browser?: BrowserData[];
-        operatingSystem?: OSOption;
-        device?: DeviceOption;
+        /**
+         * Sets the browser name, min and max version
+         */
+        browser?: BrowserData;
+        /**
+         * Sets the OS, min and max version
+         */
+        operatingSystem?: OSOption | EnumValues<typeof OSOption>;
+        /**
+         * Specify whether the device is mobile or desktop
+         */
+        device?: DeviceOption | EnumValues<typeof DeviceOption>;
+    }
+
+    export enum APIEndpoint {
+        SessionCreate = "sessions.create",
+        SessionActive = "sessions.active",
+        SessionDestroy = "sessions.destroy",
+        RequestGet = "request.get",
+        RequestPost = "request.post"
     }
 
     export type RequestOptions = {
-        endpoint: string;
+        /**
+         * The command to send to the API
+         */
+        endpoint: APIEndpoint | EnumValues<typeof APIEndpoint>;
+        [key: string]: any;
     }
 
     export type BaseBrowserAction = {
-        when?: LoadType
+        when?: LoadType | EnumValues<typeof LoadType>
     }
 
     export type WaitableAction = {
+        /**
+         * The duration in seconds to wait after the action is completed
+         */
         wait?: number;
     }
 
     export type ThrowableAction = {
+        /**
+         * Whether to ignore errors thrown by this action
+         */
         ignoreErrors?: boolean;
     }
 
     export type ElementInteractionAction = BaseBrowserAction & ThrowableAction & WaitableAction & {
+        /**
+         * The [CSS selector](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) of the target element for this action
+         */
         cssSelector: string;
+    }
+
+    export enum CatpchaType {
+        Custom = "custom",
+        Turnstile = "turnstile",
+        PerimeterX = "perimeterx",
+        ReCaptcha = "recaptcha",
+        HCaptcha = "hcaptcha",
+        MTCaptcha = "mtcaptcha"
+    }
+
+    export enum KeyboardAction {
+        Tab = "tab",
+        Enter = "enter",
+        Space = "space",
+        ArrowDown = "arrowdown",
+        ArrowUp = "arrowup",
+        ArrowLeft = "arrowleft",
+        ArrowRight = "arrowright"
     }
 
     export type BrowserAction = 
@@ -94,11 +162,11 @@ declare module "scrappey-wrapper-typed" {
         | BaseBrowserAction & ThrowableAction & { type: "goto", url: string }
         | Omit<ElementInteractionAction, "wait"> & { type: "wait_for_selector", timeout: number }
         | WaitableAction & ThrowableAction & BaseBrowserAction & { type: "wait" }
-        | ThrowableAction & { type: "solve_captcha", captcha: "turnstile" | "perimeterx" | "recaptcha" | "hcaptcha" | "mtcaptcha" }
-        | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: "custom", inputSelector: string, clickSelector?: string }
+        | ThrowableAction & { type: "solve_captcha", captcha: CatpchaType | EnumValues<typeof CatpchaType> }
+        | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CatpchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
         | { type: "execute_js", code: string }
         | ElementInteractionAction & { type: "scroll", repeat?: number, delayMs: number }
-        | { type: "keyboard", value: "tab" | "enter" | "space" | "arrowdown" | "arrowup" | "arrowleft" | "arrowright" }
+        | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
 
     export enum ProxyCountry {
         UnitedStates = "UnitedStates",
@@ -229,18 +297,32 @@ declare module "scrappey-wrapper-typed" {
         Vietnam = "Vietnam",
         Zambia = "Zambia"
     }
-        
 
     export type GetRequestOptions = {
+        /**
+         * The page URL to navigate to
+         */
         url: string;
+        /**
+         * A session UUID to continue from
+         */
         session?: string;
+        /**
+         * Cookie data
+         */
         cookiejar?: Cookie[];
+        /**
+         * Custom proxy URL, leave blank for default random rotating proxy
+         */
         proxy?: string;
+        /**
+         * Custom request header data
+         */
         customHeaders?: KeyedObject;
-        proxyCountry?: ProxyCountry;
+        proxyCountry?: ProxyCountry | EnumValues<typeof ProxyCountry>;
         includeImages?: boolean;
         includeLinks?: boolean;
-        requestType?: RequestType;
+        requestType?: RequestType | EnumValues<typeof RequestType>;
         localStorage?: KeyedObject;
         mouseMovements?: boolean;
         automaticallySolveCaptchas?: boolean;
@@ -279,44 +361,44 @@ declare module "scrappey-wrapper-typed" {
     }
 
     export default class Scrappey {
+        public readonly apiKey: string;
+        public readonly baseUrl: string;
+
         public constructor(apiKey: string);
 
         /**
          * Creates a session
-         * @param {CreateSessionOptions} data The session creation data
+         * @param {CreateSessionOptions} data The session creation data object
          * @returns {Promise<Session>} The session object
          */
         public createSession(data: CreateSessionOptions): Promise<Session>;
 
         /**
          * Destroys a session
-         * @param {Session} session 
-         * @returns 
+         * @param {Session} session The session UUID
+         * @returns {Promise<any>}
          */
         public destroySession(session: string): Promise<any>;
 
         /**
-         * Send a GET request
-         * @param data 
-         * @returns 
+         * Sends a GET request
+         * @param data The request object
+         * @returns {Promise<GetResponseData>} The reponse object
          */
         public get(data: GetRequestOptions): Promise<GetResponseData>;
 
         /**
          * Sends a POST request
-         * @param data 
-         * @returns 
+         * @param data The request object 
+         * @returns {Promise<any>} The response object
          */
         public post(data: PostRequestOptions): Promise<any>;
 
         /**
          * Sends the actual request to scrappey as a proxy
          * @param dataOptions 
-         * @returns 
+         * @returns {Promise<any>}
          */
         public sendRequest(dataOptions: RequestOptions): Promise<any>;
-
-        public readonly apiKey: string;
-        public readonly baseUrl: string;
     }
 }
