@@ -328,6 +328,8 @@ declare module "scrappey-wrapper-typed" {
         | { type: "execute_js", code: string }
         | ElementInteractionAction & { type: "scroll", repeat?: number, delayMs: number }
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
+        | ElementInteractionAction & { type: "dropdown", index: number, value?: never }
+        | ElementInteractionAction & { type: "dropdown", value: string, index?: never }
 
     type GetRequestOptions = {
         /**
@@ -491,7 +493,7 @@ declare module "scrappey-wrapper-typed" {
     //         : HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
     //             ? BaseGetResponseData & WithJSOutput
     //             : BaseGetResponseData
-    
+
     export type GetResponseData<R extends Partial<GetRequestOptions>> =
         HasDefinedKey<R, "video"> extends true
             ? (BaseGetResponseData & WithVideoURL) & WithJSOutput
