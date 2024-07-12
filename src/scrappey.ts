@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { CreateSessionOptions, GetRequestOptions, GetResponseData, PostRequestOptions } from "scrappey-wrapper-typed";
+import { BrowserAction, CreateSessionOptions, GetRequestOptions, GetResponseData, HasDefinedKey, HasObjectWithKVRecord, PostRequestOptions } from "scrappey-wrapper-typed";
 
 class Scrappey {
 
@@ -36,10 +36,10 @@ class Scrappey {
 
     /**
      * Send a GET request
-     * @param {GetRequestOptions} data 
+     * @param {Partial<GetRequestOptions>} data 
      * @returns {Promise<any>}
      */
-    async get(data: GetRequestOptions): Promise<GetResponseData> {
+    async get<R extends Partial<GetRequestOptions> & { url: string }>(data: R): Promise<GetResponseData<R>> {
         const { url } = data;
         
         if (!url) {
