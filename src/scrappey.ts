@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { BrowserAction, CreateSessionOptions, GetRequestOptions, GetResponseData, HasDefinedKey, HasObjectWithKVRecord, PostRequestOptions } from "scrappey-wrapper-typed";
+import { CreateSessionOptions, GetRequestOptions, GetResponseData, PostRequestOptions } from "scrappey-wrapper-typed";
 
 class Scrappey {
 
@@ -12,8 +12,6 @@ class Scrappey {
 
     /**
      * Creates a session
-     * @param {CreateSessionOptions} data 
-     * @returns {Promise<any>}
      */
     async createSession(data: CreateSessionOptions): Promise<any> {
         return await this.sendRequest({
@@ -24,8 +22,6 @@ class Scrappey {
 
     /**
      * Destroys a session
-     * @param {string} session
-     * @returns {Promise<any>}
      */
     async destroySession(session: string): Promise<any> {
         return await this.sendRequest({
@@ -36,8 +32,6 @@ class Scrappey {
 
     /**
      * Send a GET request
-     * @param {Partial<GetRequestOptions>} data 
-     * @returns {Promise<any>}
      */
     async get<R extends Partial<GetRequestOptions> & { url: string }>(data: R): Promise<GetResponseData<R>> {
         const { url } = data;
@@ -54,8 +48,6 @@ class Scrappey {
 
     /**
      * Sends a POST request
-     * @param {PostRequestOptions} data 
-     * @returns {Promise<any>}
      */
     async post(data: PostRequestOptions): Promise<any> {
         if (data?.customHeaders?.content_type === "application/json") {
@@ -70,8 +62,6 @@ class Scrappey {
 
     /**
      * Sends the actual request to scrappey as a proxy
-     * @param {any} dataOptions 
-     * @returns 
      */
     async sendRequest(dataOptions: any) {
         const { endpoint } = dataOptions;
