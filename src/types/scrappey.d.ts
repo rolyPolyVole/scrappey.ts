@@ -230,6 +230,12 @@ declare module "scrappey-wrapper-typed" {
          */
         proxyCountry?: ProxyCountry | EnumValues<typeof ProxyCountry>;
         /**
+         * Whether to use a premium residential proxy
+         * 
+         * Note: this will cost 4 balance instead of the usual 1
+         */
+        premiumProxy?: boolean;
+        /**
          * Whitelists certain domains
          */
         whitelistedDomains?: string[];
@@ -358,6 +364,12 @@ declare module "scrappey-wrapper-typed" {
          * A specific country from which the rotating proxy should choose from
          */
         proxyCountry: ProxyCountry | EnumValues<typeof ProxyCountry>;
+        /**
+         * Whether to use a premium residential proxy
+         * 
+         * Note: this will cost 4 balance instead of the usual 1
+         */
+        premiumProxy?: boolean;
         /**
          * If true, response will contain a list of all image URLs on the website
          */
