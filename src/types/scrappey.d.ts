@@ -8,24 +8,26 @@ declare module "scrappey-wrapper-typed" {
      */
     type EnumValues<T extends KeyedObject> = 
         | T[keyof T] 
-        | `${T[keyof T]}`
-
-    type IsDefined<T> = T extends undefined ? false : true;
+        | `${T[keyof T]}`;
 
     /**
      * Returns a boolean value indicating whether `K` is a key of type `T`
      */
-    type HasDefinedKey<T, K extends keyof any> = K extends keyof T ? IsDefined<T[K]> : false;
+    type HasDefinedKey<T, K extends keyof any> = K extends keyof T ? true : false;
 
     /**
-     * Returns if an array `T` of objects contains any element with a key-value pair `K` and `V` 
+     * Returns if an array `T` of objects contains any element that matches object `O` 
      */
-    type HasObjectWithKVRecord<T extends KeyedObject[], K extends keyof KeyedObject, V> = 
-        T extends [infer First, ...infer Rest] 
-            ? First extends Record<K, infer U> 
-                ? (U extends V ? true : HasObjectWithKVRecord<Rest extends KeyedObject[] ? Rest : never, K, V>)
-                : HasObjectWithKVRecord<Rest extends KeyedObject[] ? Rest : never, K, V>
-            : false;
+    type HasObjectWithKVRecord<T extends readonly object[], K extends PropertyKey, V> =
+        true extends (
+            T[number] extends infer A 
+                ? A extends A
+                    ? A extends Record<K, V>
+                        ? true
+                        : never
+                    : never
+                : never
+        ) ? true : false;
 
     export type BrowserData = {
         name: string;
@@ -331,7 +333,7 @@ declare module "scrappey-wrapper-typed" {
         | ElementInteractionAction & { type: "dropdown", index: number, value?: never }
         | ElementInteractionAction & { type: "dropdown", value: string, index?: never }
 
-    type GetRequestOptions = {
+    type GetRequest = {
         /**
          * The page URL to navigate to
          */
@@ -343,73 +345,77 @@ declare module "scrappey-wrapper-typed" {
         /**
          * Cookie data
          */
-        cookiejar?: Cookie[];
+        cookiejar: Cookie[];
         /**
          * Custom proxy URL, leave blank for default random rotating proxy
          */
-        proxy?: string;
+        proxy: string;
         /**
          * Custom request header data
          */
-        customHeaders?: KeyedObject;
+        customHeaders: KeyedObject;
         /**
          * A specific country from which the rotating proxy should choose from
          */
-        proxyCountry?: ProxyCountry | EnumValues<typeof ProxyCountry>;
+        proxyCountry: ProxyCountry | EnumValues<typeof ProxyCountry>;
         /**
          * If true, response will contain a list of all image URLs on the website
          */
-        includeImages?: boolean;
+        includeImages: boolean;
         /**
-         * If true, response will contaiin a list of all links on the website
+         * If true, response will contain a list of all links on the website
          */
-        includeLinks?: boolean;
+        includeLinks: boolean;
         /**
          * Takes `browser` or `request`
          */
-        requestType?: RequestType | EnumValues<typeof RequestType>;
+        requestType: RequestType | EnumValues<typeof RequestType>;
         /**
          * Sets the local storage of the page
          */
-        localStorage?: KeyedObject;
+        localStorage: KeyedObject;
         /**
          * Whether to add automatic mouse movements to reduce the chance of bot detection
          */
-        mouseMovements?: boolean;
+        mouseMovements: boolean;
         /**
          * Whether to automatically solve any captchas
          */
-        automaticallySolveCaptchas?: boolean;
+        automaticallySolveCaptchas: boolean;
         /**
          * If set to true, uses ChatGPT 3.5 to parse the page data using the query specified in `properties`
          */
-        autoparse?: boolean;
+        autoparse: boolean;
         /**
          * If `autoparse` is true, use this to specify the query to the AI
          */
-        properties?: string;
+        properties: string;
         /**
          * Whether to record a video of the actions performed on the page (A link will be returned in the response, under `videoUrl`)
          */
-        video?: boolean;
+        video: boolean;
         /**
          * If true, takes a screenshot after all browser actions have been performed
          */
-        screenshot?: boolean;
+        screenshot: boolean;
         /**
          * An ordered list of browser actions to be performed on the page, prioritising those with `when` set to `"beforeload"`
          */
-        browserActions?: BrowserAction[];
+        browserActions: BrowserAction[];
         /**
          * If the provided URL is directly to a PDF file or an image, returns that file in base64 format under `base64Response`
          */
-        base64?: boolean;
+        base64: boolean;
         [key: string]: any;
     }
 
-    export type PostRequestOptions = 
-        | Omit<GetRequestOptions, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
-        | Omit<GetRequestOptions, "customHeaders"> & { customHeaders?: any } & { postData: string }
+    export type PartialGetRequest = Partial<GetRequest> & { url: string }
+
+    type PostRequest = 
+        | Omit<GetRequest, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
+        | Omit<GetRequest, "customHeaders"> & { customHeaders?: any } & { postData: string }
+
+    export type PartialPostRequest = Partial<PostRequest> & { url: string, postData: PostRequest["postData"] };
 
     type BaseGetResponseData = {
         solution: {
@@ -467,11 +473,13 @@ declare module "scrappey-wrapper-typed" {
         [key: string]: any;
     }
 
-    type WithVideoURL = {
-        /**
-         * A link to a .webm file of the video recorded, only exists if `video` was set to true in the request 
-         */
-        videoUrl: string;
+    type WithVideoURL = Omit<BaseGetResponseData, "solution"> & {
+        solution: BaseGetResponseData["solution"] & {
+            /**
+             * A link to a .webm file of the video recorded, only exists if `video` was set to true in the request 
+             */
+            videoUrl: string;
+            }
     }
 
     type WithJSOutput = Omit<BaseGetResponseData, "solution"> & {
@@ -479,25 +487,20 @@ declare module "scrappey-wrapper-typed" {
             /**
              * A list of javascript outputs ordered in the same way as they were given in `browserActions`
              * 
-             * Note: `when: "beforeload"` actions have priority 
+             * Note: `when: beforeload` actions have priority 
              */
             javascriptReturn: any[];
         }
     }
 
-    // export type GetResponseData<R extends Partial<GetRequestOptions>> = 
-    //     HasDefinedKey<R, "video"> extends true
-    //         ? HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-    //             ? (BaseGetResponseData & WithVideoURL) & WithJSOutput
-    //             : BaseGetResponseData & WithVideoURL
-    //         : HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-    //             ? BaseGetResponseData & WithJSOutput
-    //             : BaseGetResponseData
-
-    export type GetResponseData<R extends Partial<GetRequestOptions>> =
+    export type GetResponseData<R extends PartialGetRequest> = 
         HasDefinedKey<R, "video"> extends true
-            ? (BaseGetResponseData & WithVideoURL) & WithJSOutput
-            : BaseGetResponseData & WithJSOutput
+            ? HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
+                ? BaseGetResponseData & WithVideoURL & WithJSOutput
+                : BaseGetResponseData & WithVideoURL
+            : HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
+                ? BaseGetResponseData & WithJSOutput
+                : BaseGetResponseData
 
     export default class Scrappey {
         public readonly apiKey: string;
@@ -524,14 +527,14 @@ declare module "scrappey-wrapper-typed" {
          * @param data The request object
          * @returns {Promise<GetResponseData>} The reponse object
          */
-        public get<R extends Partial<GetRequestOptions> & { url: string }>(data: R): Promise<GetResponseData<R>>;
+        public get<const R extends PartialGetRequest>(data: R): Promise<GetResponseData<R>>;
 
         /**
          * Sends a POST request
          * @param data The request object 
          * @returns {Promise<any>} The response object
          */
-        public post(data: PostRequestOptions): Promise<any>;
+        public post(data: PostRequest): Promise<any>;
 
         /**
          * Sends the actual request to scrappey as a proxy
