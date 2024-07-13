@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { CreateSessionOptions, GetRequestOptions, GetResponseData, PostRequestOptions } from "scrappey-wrapper-typed";
+import { CreateSessionOptions, GetResponseData, PartialGetRequest, PartialPostRequest, PostRequest, Session } from "scrappey-wrapper-typed";
 
 class Scrappey {
 
@@ -13,7 +13,7 @@ class Scrappey {
     /**
      * Creates a session
      */
-    async createSession(data: CreateSessionOptions): Promise<any> {
+    async createSession(data: CreateSessionOptions): Promise<Session> {
         return await this.sendRequest({
             endpoint: "sessions.create",
             ...data
@@ -33,7 +33,7 @@ class Scrappey {
     /**
      * Send a GET request
      */
-    async get<R extends Partial<GetRequestOptions> & { url: string }>(data: R): Promise<GetResponseData<R>> {
+    async get<const R extends PartialGetRequest>(data: R): Promise<GetResponseData<R>> {
         const { url } = data;
         
         if (!url) {
@@ -49,7 +49,7 @@ class Scrappey {
     /**
      * Sends a POST request
      */
-    async post(data: PostRequestOptions): Promise<any> {
+    async post<const R extends PartialPostRequest>(data: R): Promise<GetResponseData<R>> {
         if (data?.customHeaders?.content_type === "application/json") {
             data.postData = JSON.stringify(data.postData);
         }
