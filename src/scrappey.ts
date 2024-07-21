@@ -14,21 +14,21 @@ class Scrappey {
         const json = Util.sessionCreateToJSON(data);
 
         return await this.sendRequest({
-            endpoint: APIEndpoint.SessionCreate,
+            endpoint: "sessions.create",
             ...json
         });
     }
 
     public async destroySession(session: string) {
         return await this.sendRequest({
-            endpoint: APIEndpoint.SessionDestroy,
+            endpoint: "sessions.destroy",
             session: session
         });
     }
 
     public async isSessionActive(session: string) {
         return await this.sendRequest({
-            endpoint: APIEndpoint.SessionActive,
+            endpoint: "sessions.active",
             session: session
         });
     }
