@@ -26,6 +26,7 @@ async function run() {
     //https://app.scrappey.com/#/builder
     //It will auotmatically generate the data for you with the input you provided
     const get = await initialize.get({
+        requestType: "request",
         session: session,
         url: 'https://httpbin.rs/get'
     })
@@ -41,6 +42,7 @@ async function run() {
 
     //Sending a POST with a=b&c=b data format
     const post = await initialize.post({
+        requestType: "request",
         session: session,
         url: 'https://httpbin.rs/post',
         postData: "test=test&test2=test2"
@@ -48,6 +50,7 @@ async function run() {
 
     //Sending a post with JSON data
     const jsonPost = await initialize.post({
+        requestType: "request",
         session: session,
         url: 'https://backend.scrappey.com/api/auth/login',
         customHeaders: {
@@ -55,10 +58,10 @@ async function run() {
             //HTTP2 is lowercase headers
             "content-type": "application/json"
         },
-        postData: JSON.stringify({
+        postData: {
             email: "testtest@test.nl",
             password: "password",
-        })
+        }
     })
 
     //To get the text from a JSON request, use innerText instead of response
