@@ -5,6 +5,7 @@ export class Util {
         const jsonData = this.cloneObject(data) as any;
 
         if (data.proxyData) {
+            delete jsonData.proxyData;
             const jsonProxyData = this.proxyDataToJSON(data.proxyData);
 
             for (const key in jsonProxyData) {
@@ -19,6 +20,7 @@ export class Util {
         const jsonData = this.cloneObject(data) as any;
 
         if (data.proxyData) {
+            delete jsonData.proxyData;
             const jsonProxyData = this.proxyDataToJSON(data.proxyData);
 
             for (const key in jsonProxyData) {
@@ -37,6 +39,7 @@ export class Util {
         }
 
         if (data.proxyData) {
+            delete jsonData.proxyData;
             const jsonProxyData = this.proxyDataToJSON(data.proxyData);
 
             for (const key in jsonProxyData) {
