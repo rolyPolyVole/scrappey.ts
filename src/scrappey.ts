@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { SessionCreateRequestOptions, APIEndpoint, GetRequest, PostRequest, RequestOptions, GetResponseData } from "scrappey-wrapper-typed";
+import { SessionCreateRequestOptions, GetRequest, PostRequest, RequestOptions } from "scrappey-wrapper-typed";
 import { Util } from "./util.js";
 
 class Scrappey {
@@ -43,7 +43,7 @@ class Scrappey {
         const json = Util.getRequestToJSON(data);
 
         return await this.sendRequest({
-            endpoint: APIEndpoint.RequestGet,
+            endpoint: "request.get",
             ...json
         });
     }
@@ -52,7 +52,7 @@ class Scrappey {
         const json = Util.postRequestToJSON(data);
 
         return await this.sendRequest({
-            endpoint: APIEndpoint.RequestPost,
+            endpoint: "request.post",
             ...json
         });
     }
