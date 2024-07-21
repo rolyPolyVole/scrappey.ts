@@ -4,6 +4,26 @@ declare module "scrappey-wrapper-typed" {
     }
 
     /**
+     * Asserts the distribution key `K` of a distributed union `T` to the given value `V`
+     */
+    type AssertDistributedUnion<T extends KeyedObject, K extends keyof KeyedObject, V extends T[K]>
+        = T extends { [P in K]: V } ? T : never;
+
+    /**
+     * Inserts properties of record `V` into key `K` of type `T`, where `T[K]` is another record
+     */
+    type Insert<T, K extends keyof T, V extends KeyedObject> = T[K] extends KeyedObject 
+        ? Omit<T, K> & { [P in K]: T[K] & V } 
+        : never;
+
+    /**
+     * Makes all properties in `T` partial except for those in `K`
+     */
+    type PartialExcept<T, K extends keyof T> = {
+        [P in keyof T as P extends K ? P : never]: T[P];
+    } & Partial<Pick<T, Exclude<keyof T, K>>>;
+
+    /**
      * Returns the string values of an enum
      */
     type EnumValues<T extends KeyedObject> = 
@@ -13,7 +33,11 @@ declare module "scrappey-wrapper-typed" {
     /**
      * Returns a boolean value indicating whether `K` is a key of type `T`
      */
-    type HasDefinedKey<T, K extends keyof any> = K extends keyof T ? true : false;
+    type HasDefinedKV<T, K extends keyof T, V extends T[K]> = K extends keyof T 
+        ? T[K] extends V
+            ? true
+            : false
+        : false;
 
     /**
      * Returns if an array `T` of objects contains any element that matches object `O` 
@@ -28,6 +52,7 @@ declare module "scrappey-wrapper-typed" {
                     : never
                 : never
         ) ? true : false;
+
 
     export type BrowserData = {
         name: string;
@@ -216,51 +241,6 @@ declare module "scrappey-wrapper-typed" {
         Zambia = "Zambia"
     }
 
-    export type CreateSessionOptions = {
-        /**
-         * A custom session UUID to assign, defaults to a random UUID
-         */
-        session?: string;
-        /**
-         * A url to a proxy server, defaults to a random rotating proxy
-         */
-        proxy?: string;
-        /**
-         * A specific country from where the rotating proxy should choose from
-         */
-        proxyCountry?: ProxyCountry | EnumValues<typeof ProxyCountry>;
-        /**
-         * Whether to use a premium residential proxy
-         * 
-         * Note: this will cost 4 balance instead of the usual 1
-         */
-        premiumProxy?: boolean;
-        /**
-         * Whitelists certain domains
-         */
-        whitelistedDomains?: string[];
-        /**
-         * If true, uses a datacenter proxy instead of a residential one
-         */
-        datacenter?: boolean;
-        /**
-         * Sets the browser name, min and max version
-         */
-        browser?: BrowserData;
-        /**
-         * Sets the OS, min and max version
-         */
-        operatingSystem?: OSOption | EnumValues<typeof OSOption>;
-        /**
-         * Specify whether the device is mobile or desktop
-         */
-        device?: DeviceOption | EnumValues<typeof DeviceOption>;
-        /**
-         * Whether to use a patched chrome browser, only applies if the browser is set to chrome (Firefox has this feature by default)
-         */
-        noDriver?: boolean;
-    }
-
     export enum APIEndpoint {
         SessionCreate = "sessions.create",
         SessionActive = "sessions.active",
@@ -330,16 +310,80 @@ declare module "scrappey-wrapper-typed" {
         | BaseBrowserAction & WaitableAction & { type: "discord_login", token: string }
         | BaseBrowserAction & ThrowableAction & { type: "goto", url: string }
         | Omit<ElementInteractionAction, "wait"> & { type: "wait_for_selector", timeout: number }
-        | WaitableAction & ThrowableAction & BaseBrowserAction & { type: "wait" }
+        | Required<WaitableAction> & ThrowableAction & BaseBrowserAction & { type: "wait" }
         | ThrowableAction & { type: "solve_captcha", captcha: CatpchaType | EnumValues<typeof CatpchaType> }
         | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CatpchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
         | { type: "execute_js", code: string }
-        | ElementInteractionAction & { type: "scroll", repeat?: number, delayMs: number }
+        | Partial<ElementInteractionAction> & { type: "scroll", repeat?: number, delayMs?: number }
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
         | ElementInteractionAction & { type: "dropdown", index: number, value?: never }
-        | ElementInteractionAction & { type: "dropdown", value: string, index?: never }
+        | ElementInteractionAction & { type: "dropdown", value: string, index?: never };
 
-    type GetRequest = {
+    export enum ProxyType {
+        Residential = "residential",
+        PremiumResidential = "premiumResidential",
+        DataCenter = "dataCenter",
+        Mobile = "mobile"
+    }
+
+    type WithCustomProxy = {
+        /**
+         * Custom proxy URL, leave blank for default random rotating proxy
+         */
+        proxy: string;
+        /**
+         * Whether to fall back to a random rotating proxy in case a specified proxy url fails
+         */
+        dontChangeProxy?: boolean;
+    }
+
+    type WithRotatingProxy = {
+        /**
+         * A specific country from which the rotating proxy should choose from
+         */
+        proxyCountry?: ProxyCountry | EnumValues<typeof ProxyCountry>;
+        /**
+         * The type of proxy to use
+         */
+        proxyType: ProxyType | EnumValues<typeof ProxyType>;
+    }
+
+    type ProxyData = 
+        | { type: "custom" } & WithCustomProxy 
+        | { type: "rotating" } & WithRotatingProxy;
+
+    export type SessionCreateRequestOptions = {
+        /**
+         * A custom session UUID to assign, defaults to a random UUID
+         */
+        session?: string;
+        /**
+         * Proxy information
+         */
+        proxyData?: ProxyData;
+        /**
+         * Whitelists certain domains
+         */
+        whitelistedDomains?: string[];
+        /**
+         * Sets the browser name, min and max version
+         */
+        browser?: BrowserData;
+        /**
+         * Sets the OS, min and max version
+         */
+        operatingSystem?: OSOption | EnumValues<typeof OSOption>;
+        /**
+         * Specify whether the device is mobile or desktop
+         */
+        device?: DeviceOption | EnumValues<typeof DeviceOption>;
+        /**
+         * Whether to use a patched chrome browser, only applies if the browser is set to chrome (Firefox has this feature by default)
+         */
+        noDriver?: boolean;
+    }
+
+    type BaseHTTPRequest = {
         /**
          * The page URL to navigate to
          */
@@ -349,170 +393,171 @@ declare module "scrappey-wrapper-typed" {
          */
         session?: string;
         /**
-         * Cookie data
+         * Proxy information
          */
-        cookiejar: Cookie[];
-        /**
-         * Custom proxy URL, leave blank for default random rotating proxy
-         */
-        proxy: string;
+        proxyData?: ProxyData;
         /**
          * Custom request header data
          */
-        customHeaders: KeyedObject;
+        customHeaders?: KeyedObject;
         /**
-         * A specific country from which the rotating proxy should choose from
+         * A custom cookie string to use
          */
-        proxyCountry: ProxyCountry | EnumValues<typeof ProxyCountry>;
+        cookies?: string;
         /**
-         * Whether to use a premium residential proxy
-         * 
-         * Note: this will cost 4 balance instead of the usual 1
+         * Amount of retry attempts before the request fails
          */
-        premiumProxy?: boolean;
-        /**
-         * If true, response will contain a list of all image URLs on the website
-         */
-        includeImages: boolean;
+        retries?: number;
+    }
+
+    type BaseGetRequest = {
+        includeImages?: boolean;
         /**
          * If true, response will contain a list of all links on the website
          */
-        includeLinks: boolean;
+        includeLinks?: boolean;
         /**
-         * Takes `browser` or `request`
+         * Loads content from the specified URLs
          */
-        requestType: RequestType | EnumValues<typeof RequestType>;
+        alwaysLoad?: string[];
         /**
          * Sets the local storage of the page
          */
-        localStorage: KeyedObject;
+        localStorage?: KeyedObject;
         /**
          * Whether to add automatic mouse movements to reduce the chance of bot detection
          */
-        mouseMovements: boolean;
+        mouseMovements?: boolean;
         /**
          * Whether to automatically solve any captchas
          */
-        automaticallySolveCaptchas: boolean;
+        automaticallySolveCaptchas?: boolean;
         /**
          * If set to true, uses ChatGPT 3.5 to parse the page data using the query specified in `properties`
          */
-        autoparse: boolean;
+        autoparse?: boolean;
         /**
          * If `autoparse` is true, use this to specify the query to the AI
          */
-        properties: string;
+        properties?: string;
         /**
          * Whether to record a video of the actions performed on the page (A link will be returned in the response, under `videoUrl`)
          */
-        video: boolean;
+        video?: boolean;
         /**
          * If true, takes a screenshot after all browser actions have been performed
          */
-        screenshot: boolean;
+        screenshot?: boolean;
         /**
          * An ordered list of browser actions to be performed on the page, prioritising those with `when` set to `"beforeload"`
          */
-        browserActions: BrowserAction[];
+        browserActions?: BrowserAction[];
         /**
          * If the provided URL is directly to a PDF file or an image, returns that file in base64 format under `base64Response`
          */
-        base64: boolean;
-        [key: string]: any;
+        base64?: boolean;
     }
 
-    export type PartialGetRequest = Partial<GetRequest> & { url: string }
+    type GetRequest =
+        | { requestType: "request" } & BaseHTTPRequest
+        | { requestType: "browser" } & BaseHTTPRequest & BaseGetRequest;
+
+    type HTTPRequest = AssertDistributedUnion<GetRequest, "requestType", "request">;
+    type BrowserRequest = AssertDistributedUnion<GetRequest, "requestType", "browser">;
 
     type PostRequest = 
-        | Omit<GetRequest, "customHeaders"> & { customHeaders: { content_type: "application/json" } } & { postData: KeyedObject } 
-        | Omit<GetRequest, "customHeaders"> & { customHeaders?: any } & { postData: string }
-
-    export type PartialPostRequest = Partial<PostRequest> & { url: string, postData: PostRequest["postData"] };
+        | Omit<GetRequest, "customHeaders"> & { customHeaders: { "content-type": "application/json" } } & { postData: KeyedObject | string } 
+        | Omit<GetRequest, "customHeaders"> & { customHeaders?: any } & { postData: string };
 
     type BaseGetResponseData = {
-        solution: {
+        readonly solution: {
             /**
              * Whether the request was successful or not
              */
-            verified: boolean;
+            readonly verified: boolean;
             /**
              * The current URL the request ended on
              */
-            currentUrl?: string;
+            readonly currentUrl?: string;
             /**
              * The user agent string
              */
-            userAgent?: string;
+            readonly userAgent?: string;
             /**
              * The text content of the page
              */
-            innerText?: string;
+            readonly innerText?: string;
             /**
              * The page's local storage data
              */
-            localStorageData?: {
-                [key: string]: string;
+            readonly localStorageData?: {
+                readonly [key: string]: string;
             }
             /**
              * A list of active cookies on the page
              */
-            cookies?: ActiveCookie[];
+            readonly cookies?: Readonly<ActiveCookie>[];
             /**
              * The HTML content of the page
              */
-            response?: string;
+            readonly response?: string;
             /**
              * The request type
              */
-            type?: RequestType | EnumValues<typeof RequestType>;
+            readonly type?: RequestType | EnumValues<typeof RequestType>;
         }
         /**
-         * The total amount of milliseconds it took for the request to complete
+         * The amount of milliseconds it took for the request to complete
          */
-        timeElapsed: number;
+        readonly timeElapsed: number;
         /**
          * Result state of the request, e.g. `"success"`, `"error"`
          */
-        data: string;
+        readonly data: string;
         /**
          * The session UUID used for this request
          */
-        session: string;
+        readonly session: string;
         /**
          * The request UUID
          */
-        request_uuid: string;
-        [key: string]: any;
+        readonly request_uuid: string;
+        readonly [key: string]: any;
     }
 
-    type WithVideoURL = Omit<BaseGetResponseData, "solution"> & {
-        solution: BaseGetResponseData["solution"] & {
-            /**
-             * A link to a .webm file of the video recorded, only exists if `video` was set to true in the request 
-             */
-            videoUrl: string;
-            }
+    type WithVideoURL<R extends BrowserRequest> = HasDefinedKV<R, "video", true> extends true
+        ? Insert<BaseGetResponseData, "solution", 
+            {
+                /**
+                 * A link to a .webm file of the video recorded, only exists if `video` was set to true in the request 
+                 */
+                readonly videoUrl: string;
+            }>
+        : R;
+
+    type WithJSOutput<R extends BrowserRequest> = HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
+        ? Insert<BaseGetResponseData, "solution", 
+            {
+                /**
+                 * A list of javascript outputs ordered in the same way as they were given in `browserActions`
+                 * 
+                 * Note: `when: beforeload` actions have priority
+                 */
+                readonly javascriptReturn: any[];
+            }>
+        : R;
+
+    export type GetResponseData<R extends GetRequest> = R extends BrowserRequest
+            ? BaseGetResponseData & WithVideoURL<R> & WithJSOutput<R>
+            : BaseGetResponseData;
+
+    export type SessionActiveData = {
+        readonly active: boolean;
     }
 
-    type WithJSOutput = Omit<BaseGetResponseData, "solution"> & {
-        solution: BaseGetResponseData["solution"] & {
-            /**
-             * A list of javascript outputs ordered in the same way as they were given in `browserActions`
-             * 
-             * Note: `when: beforeload` actions have priority 
-             */
-            javascriptReturn: any[];
-        }
+    export type RemainingBalanceData = {
+        readonly balance: number;
     }
-
-    export type GetResponseData<R extends PartialGetRequest> = 
-        HasDefinedKey<R, "video"> extends true
-            ? HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-                ? BaseGetResponseData & WithVideoURL & WithJSOutput
-                : BaseGetResponseData & WithVideoURL
-            : HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-                ? BaseGetResponseData & WithJSOutput
-                : BaseGetResponseData
 
     export default class Scrappey {
         public readonly apiKey: string;
@@ -522,36 +567,42 @@ declare module "scrappey-wrapper-typed" {
 
         /**
          * Creates a session
-         * @param {CreateSessionOptions} data The session creation data object
-         * @returns {Promise<Session>} The session object
+         * @param {SessionCreateOptions} data The session creation data object
          */
-        public createSession(data: CreateSessionOptions): Promise<Session>;
+        public createSession(data: SessionCreateRequestOptions): Promise<Session>;
 
         /**
          * Destroys a session
-         * @param {Session} session The session UUID
-         * @returns {Promise<any>}
+         * @param {string} session The session UUID
          */
         public destroySession(session: string): Promise<any>;
 
         /**
+         * Returns whether a session is currently active
+         * @param {string} session The session UUID 
+         */
+        public isSessionActive(session: string): Promise<SessionActiveData>;
+
+        /**
+         * Returns your remaining API tokens
+         */
+        public getBalance(): Promise<RemainingBalanceData>;
+
+        /**
          * Sends a GET request
          * @param data The request object
-         * @returns {Promise<GetResponseData>} The reponse object
          */
-        public get<const R extends PartialGetRequest>(data: R): Promise<GetResponseData<R>>;
+        public get<const R extends GetRequest>(data: R): Promise<GetResponseData<R>>;
 
         /**
          * Sends a POST request
          * @param data The request object 
-         * @returns {Promise<any>} The response object
          */
-        public post(data: PostRequest): Promise<any>;
+        public post<const R extends PostRequest>(data: R): Promise<GetResponseData<R>>;
 
         /**
-         * Sends the actual request to scrappey as a proxy
+         * Sends a raw request to directly to scrappey API
          * @param dataOptions 
-         * @returns {Promise<any>}
          */
         public sendRequest(dataOptions: RequestOptions): Promise<any>;
     }

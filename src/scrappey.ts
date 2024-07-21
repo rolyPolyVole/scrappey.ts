@@ -1,69 +1,63 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { CreateSessionOptions, GetResponseData, PartialGetRequest, PartialPostRequest, PostRequest, Session } from "scrappey-wrapper-typed";
+import { SessionCreateRequestOptions, APIEndpoint, GetRequest, PostRequest, RequestOptions, GetResponseData } from "scrappey-wrapper-typed";
+import { Util } from "./util.js";
 
 class Scrappey {
-
     public readonly apiKey: string;
     public readonly baseUrl = "https://publisher.scrappey.com/api/v1";
 
-    constructor(apiKey: string) {
+    public constructor(apiKey: string) {
         this.apiKey = apiKey;
     }
 
-    /**
-     * Creates a session
-     */
-    async createSession(data: CreateSessionOptions): Promise<Session> {
+    public async createSession(data: SessionCreateRequestOptions) {
+        const json = Util.sessionCreateToJSON(data);
+
         return await this.sendRequest({
-            endpoint: "sessions.create",
-            ...data
+            endpoint: APIEndpoint.SessionCreate,
+            ...json
         });
     }
 
-    /**
-     * Destroys a session
-     */
-    async destroySession(session: string): Promise<any> {
+    public async destroySession(session: string) {
         return await this.sendRequest({
-            endpoint: "sessions.destroy",
+            endpoint: APIEndpoint.SessionDestroy,
             session: session
         });
     }
 
-    /**
-     * Send a GET request
-     */
-    async get<const R extends PartialGetRequest>(data: R): Promise<GetResponseData<R>> {
+    public async isSessionActive(session: string) {
+        return await this.sendRequest({
+            endpoint: APIEndpoint.SessionActive,
+            session: session
+        });
+    }
+
+    public async get<const R extends GetRequest>(data: R) {
         const { url } = data;
         
         if (!url) {
             throw new Error(`URL is required to send a request`);
         }
 
+        const json = Util.getRequestToJSON(data);
+
         return await this.sendRequest({
-            endpoint: "request.get",
-            ...data
+            endpoint: APIEndpoint.RequestGet,
+            ...json
         });
     }
 
-    /**
-     * Sends a POST request
-     */
-    async post<const R extends PartialPostRequest>(data: R): Promise<GetResponseData<R>> {
-        if (data?.customHeaders?.content_type === "application/json") {
-            data.postData = JSON.stringify(data.postData);
-        }
+    public async post<const R extends PostRequest>(data: R) {
+        const json = Util.postRequestToJSON(data);
 
         return await this.sendRequest({
-            endpoint: "request.post",
-            ...data
+            endpoint: APIEndpoint.RequestPost,
+            ...json
         });
     }
 
-    /**
-     * Sends the actual request to scrappey as a proxy
-     */
-    async sendRequest(dataOptions: any) {
+    public async sendRequest(dataOptions: RequestOptions) {
         const { endpoint } = dataOptions;
 
         if (!endpoint) {
