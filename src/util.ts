@@ -1,7 +1,5 @@
-import { GetRequest, PostRequest, ProxyData, SessionCreateRequestOptions } from "scrappey-wrapper-typed";
-
 export class Util {
-    public static sessionCreateToJSON(data: SessionCreateRequestOptions): any {
+    public static sessionCreateToJSON(data: any): any {
         const jsonData = this.cloneObject(data) as any;
 
         if (data.proxyData) {
@@ -16,7 +14,7 @@ export class Util {
         return jsonData;
     }
 
-    public static getRequestToJSON(data: GetRequest): any {
+    public static getRequestToJSON(data: any): any {
         const jsonData = this.cloneObject(data) as any;
 
         if (data.proxyData) {
@@ -31,7 +29,7 @@ export class Util {
         return jsonData;
     }
 
-    public static postRequestToJSON(data: PostRequest): any {
+    public static postRequestToJSON(data: any): any {
         const jsonData = this.cloneObject(data) as any;
 
         if (data?.customHeaders?.content_type === "application/json" && typeof data?.postData === "object") {
@@ -50,14 +48,14 @@ export class Util {
         return jsonData;
     }
 
-    private static proxyDataToJSON(data: ProxyData): any {
+    private static proxyDataToJSON(data: any): any {
         const jsonData = {} as any;
         
         if (data.type === "custom") {
             jsonData.proxy = data.proxy;
 
             if (data.dontChangeProxy) {
-                jsonData.proxyCountry = data.dontChangeProxy;
+                jsonData.dontChangeProxy = data.dontChangeProxy;
             }
         } else if (data.type === "rotating") {
             switch (data.proxyType) {
