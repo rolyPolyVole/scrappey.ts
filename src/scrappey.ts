@@ -1,5 +1,6 @@
+/// <reference path="./types/scrappey.d.ts" />
+
 import axios, { AxiosRequestConfig } from "axios";
-import { SessionCreateRequestOptions, GetRequest, PostRequest, RequestOptions } from "scrappey-wrapper-typed";
 import { Util } from "./util.js";
 
 class Scrappey {
@@ -10,7 +11,7 @@ class Scrappey {
         this.apiKey = apiKey;
     }
 
-    public async createSession(data: SessionCreateRequestOptions) {
+    public async createSession(data: any) {
         const json = Util.sessionCreateToJSON(data);
 
         return await this.sendRequest({
@@ -33,7 +34,27 @@ class Scrappey {
         });
     }
 
-    public async get<const R extends GetRequest>(data: R) {
+    public async getBalance() {
+        const url = "https://publisher.scrappey.com/api/v1/balance?key=" + this.apiKey;
+
+        const options: AxiosRequestConfig = {
+            url,
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            timeout: 5 * 60 * 1000
+        }
+
+        try {
+            const response = await axios(url, options);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    public async get(data: any) {
         const { url } = data;
         
         if (!url) {
@@ -48,7 +69,7 @@ class Scrappey {
         });
     }
 
-    public async post<const R extends PostRequest>(data: R) {
+    public async post(data: any) {
         const json = Util.postRequestToJSON(data);
 
         return await this.sendRequest({
@@ -57,7 +78,7 @@ class Scrappey {
         });
     }
 
-    public async sendRequest(dataOptions: RequestOptions) {
+    public async sendRequest(dataOptions: any) {
         const { endpoint } = dataOptions;
 
         if (!endpoint) {
@@ -85,7 +106,7 @@ class Scrappey {
                 ...dataOptions
             },
             timeout: 5 * 60 * 1000
-        };
+        }
 
         try {
             const response = await axios(url, options);
