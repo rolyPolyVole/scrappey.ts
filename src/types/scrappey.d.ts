@@ -1,59 +1,6 @@
+import type { EnumValues, KeyedObject, AssertDiscriminatedUnion, Insert, HasDefinedKV, HasObjectWithKVRecord } from "./typeUtil.d.ts";
+
 declare module "scrappey-wrapper-typed" {
-    type KeyedObject = {
-        [key: string]: any
-    }
-
-    /**
-     * Asserts the distribution key `K` of a distributed union `T` to the given value `V`
-     */
-    type AssertDistributedUnion<T extends KeyedObject, K extends keyof KeyedObject, V extends T[K]>
-        = T extends { [P in K]: V } ? T : never;
-
-    /**
-     * Inserts properties of record `V` into key `K` of type `T`, where `T[K]` is another record
-     */
-    type Insert<T, K extends keyof T, V extends KeyedObject> = T[K] extends KeyedObject 
-        ? Omit<T, K> & { [P in K]: T[K] & V } 
-        : never;
-
-    /**
-     * Makes all properties in `T` partial except for those in `K`
-     */
-    type PartialExcept<T, K extends keyof T> = {
-        [P in keyof T as P extends K ? P : never]: T[P];
-    } & Partial<Pick<T, Exclude<keyof T, K>>>;
-
-    /**
-     * Returns the string values of an enum
-     */
-    type EnumValues<T extends KeyedObject> = 
-        | T[keyof T] 
-        | `${T[keyof T]}`;
-
-    /**
-     * Returns a boolean value indicating whether `K` is a key of type `T`
-     */
-    type HasDefinedKV<T, K extends keyof T, V extends T[K]> = K extends keyof T 
-        ? T[K] extends V
-            ? true
-            : false
-        : false;
-
-    /**
-     * Returns if an array `T` of objects contains any element that matches object `O` 
-     */
-    type HasObjectWithKVRecord<T extends readonly object[], K extends PropertyKey, V> =
-        true extends (
-            T[number] extends infer A 
-                ? A extends A
-                    ? A extends Record<K, V>
-                        ? true
-                        : never
-                    : never
-                : never
-        ) ? true : false;
-
-
     export type BrowserData = {
         name: string;
         minVersion?: number;
@@ -71,16 +18,6 @@ declare module "scrappey-wrapper-typed" {
         Linux = "linux",
         Android = "android",
         IOS = "ios"
-    }
-
-    export enum RequestType {
-        Browser = "browser",
-        Request = "request"
-    }
-
-    export enum LoadType {
-        BeforeLoad = "beforeload",
-        AfterLoad = "afterload"
     }
 
     export type Session = {
@@ -257,6 +194,11 @@ declare module "scrappey-wrapper-typed" {
         [key: string]: any;
     }
 
+    export enum LoadType {
+        BeforeLoad = "beforeload",
+        AfterLoad = "afterload"
+    }
+
     export type BaseBrowserAction = {
         /**
          * Whether this action should be executed before the supplied `url` loads, or after it
@@ -305,13 +247,13 @@ declare module "scrappey-wrapper-typed" {
     }
 
     export type BrowserAction = 
-        | ElementInteractionAction & { type: "click", waitForSelector?: boolean; }
+        | ElementInteractionAction & { type: "click", waitForSelector?: string; }
         | ElementInteractionAction & { type: "type", text: string }
         | BaseBrowserAction & WaitableAction & { type: "discord_login", token: string }
         | BaseBrowserAction & ThrowableAction & { type: "goto", url: string }
         | Omit<ElementInteractionAction, "wait"> & { type: "wait_for_selector", timeout: number }
         | Required<WaitableAction> & ThrowableAction & BaseBrowserAction & { type: "wait" }
-        | ThrowableAction & { type: "solve_captcha", captcha: CatpchaType | EnumValues<typeof CatpchaType> }
+        | ThrowableAction & { type: "solve_captcha", captcha: Omit<CatpchaType, "Custom"> | Omit<EnumValues<typeof CatpchaType>, "custom"> }
         | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CatpchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
         | { type: "execute_js", code: string }
         | Partial<ElementInteractionAction> & { type: "scroll", repeat?: number, delayMs?: number }
@@ -458,12 +400,17 @@ declare module "scrappey-wrapper-typed" {
         base64?: boolean;
     }
 
-    type GetRequest =
-        | { requestType: "request" } & BaseHTTPRequest
-        | { requestType: "browser" } & BaseHTTPRequest & BaseGetRequest;
+    export enum RequestType {
+        Browser = "browser",
+        Request = "request"
+    }
 
-    type HTTPRequest = AssertDistributedUnion<GetRequest, "requestType", "request">;
-    type BrowserRequest = AssertDistributedUnion<GetRequest, "requestType", "browser">;
+    type GetRequest =
+        | { requestType: "request" | RequestType.Request } & BaseHTTPRequest
+        | { requestType: "browser" | RequestType.Browser } & BaseHTTPRequest & BaseGetRequest;
+
+    type HTTPRequest = AssertDiscriminatedUnion<GetRequest, "requestType", "request">;
+    type BrowserRequest = AssertDiscriminatedUnion<GetRequest, "requestType", "browser">;
 
     type PostRequest = 
         | Omit<GetRequest, "customHeaders"> & { customHeaders: { "content-type": "application/json" } } & { postData: KeyedObject | string } 
@@ -525,30 +472,39 @@ declare module "scrappey-wrapper-typed" {
         readonly [key: string]: any;
     }
 
+    type InsertSolution<T extends KeyedObject> = Insert<BaseGetResponseData, "solution", T>;
+
     type WithVideoURL<R extends BrowserRequest> = HasDefinedKV<R, "video", true> extends true
-        ? Insert<BaseGetResponseData, "solution", 
-            {
-                /**
-                 * A link to a .webm file of the video recorded, only exists if `video` was set to true in the request 
-                 */
-                readonly videoUrl: string;
-            }>
+        ? InsertSolution<{
+            /**
+             * A link to a .webm file of the recorded debugging video
+             */
+            readonly videoUrl: string; 
+        }>
         : R;
 
     type WithJSOutput<R extends BrowserRequest> = HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-        ? Insert<BaseGetResponseData, "solution", 
-            {
-                /**
-                 * A list of javascript outputs ordered in the same way as they were given in `browserActions`
-                 * 
-                 * Note: `when: beforeload` actions have priority
-                 */
-                readonly javascriptReturn: any[];
-            }>
+        ? InsertSolution<{
+            /**
+             * A list of javascript outputs ordered in the same way as they were given in `browserActions`
+             * 
+             * Note: `when: beforeload` actions have priority
+             */
+            readonly javascriptReturn: any[]; 
+        }>
+        : R;
+
+    type WithBase64Response<R extends BrowserRequest> = HasDefinedKV<R, "base64", true> extends true
+        ? InsertSolution<{
+            /**
+             * The base64 format of the image or pdf provided in the URL
+             */
+            readonly base64Response: string;
+        }>
         : R;
 
     export type GetResponseData<R extends GetRequest> = R extends BrowserRequest
-            ? BaseGetResponseData & WithVideoURL<R> & WithJSOutput<R>
+            ? BaseGetResponseData & WithVideoURL<R> & WithJSOutput<R> & WithBase64Response<R>
             : BaseGetResponseData;
 
     export type SessionActiveData = {
