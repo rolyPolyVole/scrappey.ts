@@ -445,6 +445,10 @@ declare module "scrappey-wrapper-typed" {
              */
             readonly cookies?: Readonly<ActiveCookie>[];
             /**
+             * The cookies in string format
+             */
+            readonly cookieString?: string;
+            /**
              * The HTML content of the page
              */
             readonly response?: string;
