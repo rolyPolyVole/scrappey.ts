@@ -333,7 +333,7 @@ declare module "scrappey-wrapper-typed" {
         /**
          * If set to `true`, ignores the input of `url` and executes the request on the current tab of the provided `session`
          */
-        keepSamgePage: boolean
+        keepSamgePage?: boolean
         /**
          * A session UUID to continue from
          */
