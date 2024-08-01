@@ -290,7 +290,7 @@ declare module "scrappey-wrapper-typed" {
         proxyType: ProxyType | EnumValues<typeof ProxyType>;
     }
 
-    type ProxyData = 
+    export type ProxyData = 
         | { type: "custom" } & WithCustomProxy 
         | { type: "rotating" } & WithRotatingProxy;
 
@@ -325,29 +325,19 @@ declare module "scrappey-wrapper-typed" {
         noDriver?: boolean;
     }
 
-    type WithSession = {
-        /**
-         * A session UUID to continue from
-         */
-        session?: string;
-    }
-
-    type WithSessionAndKeepSamePage = {
-        /**
-         * A session UUID to continue from
-         */
-        session: string;
-        /**
-         * If set to `true`, ignores the input of `url` and executes the request on the current tab of the provided `session`
-         */
-        keepSamePage: boolean;
-    }
-
-    type BaseHTTPRequest = {
+    export type BaseHTTPRequest = {
         /**
          * The page URL to navigate to
          */
         url: string;
+        /**
+         * If set to `true`, ignores the input of `url` and executes the request on the current tab of the provided `session`
+         */
+        keepSamgePage: boolean
+        /**
+         * A session UUID to continue from
+         */
+        session?: string;
         /**
          * Proxy information
          */
@@ -364,9 +354,9 @@ declare module "scrappey-wrapper-typed" {
          * Amount of retry attempts before the request fails
          */
         retries?: number;
-    } & (WithSession | WithSessionAndKeepSamePage);
+    }
 
-    type BaseGetRequest = {
+    export type BaseGetRequest = {
         includeImages?: boolean;
         /**
          * If true, response will contain a list of all links on the website
@@ -427,12 +417,10 @@ declare module "scrappey-wrapper-typed" {
     type BrowserRequest = AssertDiscriminatedUnion<GetRequest, "requestType", "browser">;
 
     type PostRequest = 
-        | Omit<HTTPRequest, "customHeaders"> & { customHeaders: { "content-type": "application/json" } } & { postData: KeyedObject | string } 
-        | Omit<HTTPRequest, "customHeaders"> & { customHeaders?: any } & { postData: string }
-        | Omit<BrowserRequest, "customHeaders"> & { customHeaders: { "content-type": "application/json" } } & { postData: KeyedObject | string } 
-        | Omit<BrowserRequest, "customHeaders"> & { customHeaders?: any } & { postData: string };
+        | Omit<GetRequest, "customHeaders"> & { customHeaders: { "content-type": "application/json" } } & { postData: KeyedObject | string } 
+        | Omit<GetRequest, "customHeaders"> & { customHeaders?: any } & { postData: string };
 
-    type BaseGetResponseData = {
+    export type BaseGetResponseData = {
         readonly solution: {
             /**
              * Whether the request was successful or not
@@ -514,7 +502,7 @@ declare module "scrappey-wrapper-typed" {
         }>
         : R;
 
-    type WithBase64Response<R extends BrowserRequest> = HasDefinedKV<R, "base64", true> extends true
+    export type WithBase64Response<R extends BrowserRequest> = HasDefinedKV<R, "base64", true> extends true
         ? InsertSolution<{
             /**
              * The base64 format of the image or pdf provided in the URL
