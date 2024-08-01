@@ -40,14 +40,14 @@ export class Preconditions {
         
         if (type === "custom") {
             const rotatingExclusive = ["proxyCountry", "proxyType"];
-            const disallowedKeys = rotatingExclusive.map(key => data.hasOwnProperty(key));
+            const disallowedKeys = rotatingExclusive.filter(key => data.hasOwnProperty(key));
 
             if (disallowedKeys.length > 0) {
                 throw new Error(`Properties ${disallowedKeys.join(", ")} are not allowed with type: "custom"!`);
             }
         } else if (type === "rotating") {
             const customExclusive = ["proxy", "dontChangeProxy"];
-            const disallowedKeys = customExclusive.map(key => data.hasOwnProperty(key));
+            const disallowedKeys = customExclusive.filter(key => data.hasOwnProperty(key));
 
             if (disallowedKeys.length > 0) {
                 throw new Error(`Properties ${disallowedKeys.join(", ")} are not allowed with type: "rotating"!`);
