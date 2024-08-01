@@ -53,13 +53,6 @@ export class Preconditions {
                 throw new Error(`Properties ${disallowedKeys.join(", ")} are not allowed with type: "rotating"!`);
             }
         }
-
-        const browserExclusive = [];
-        const disallowedKeys = browserExclusive.map(key => data.hasOwnProperty(key));
-
-        if (disallowedKeys.length > 0) {
-            throw new Error(`Properties ${disallowedKeys.join(", ")} are not allowed with requestType: "request"!`);
-        }
     }
 
     public static validateRequestData(data: KeyedObject): void {
