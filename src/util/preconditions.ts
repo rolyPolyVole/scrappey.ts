@@ -25,7 +25,7 @@ export class Preconditions {
         if (type === "browser") return;
 
         const browserExclusive = ["includeImages", "includeLinks", "alwaysLoad", "localStorage", "mouseMovements", "automaticallySolveCaptchas", "autoparse", "properties", "video","screenshot", "browserActions", "base64"];
-        const disallowedKeys = browserExclusive.map(key => data.hasOwnProperty(key));
+        const disallowedKeys = browserExclusive.filter(key => data.hasOwnProperty(key));
 
         if (disallowedKeys.length > 0) {
             throw new Error(`Properties ${disallowedKeys.join(", ")} are not allowed with requestType: "request"!`);
