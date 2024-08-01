@@ -1,7 +1,9 @@
 /// <reference path="./types/scrappey.d.ts" />
 
 import axios, { AxiosRequestConfig } from "axios";
-import { Util } from "./util.js";
+import { Util } from "./util/util.js";
+import { Preconditions } from "./util/preconditions.js";
+import { KeyedObject } from "./types/typeUtil.js";
 
 class Scrappey {
     public readonly apiKey: string;
@@ -11,7 +13,7 @@ class Scrappey {
         this.apiKey = apiKey;
     }
 
-    public async createSession(data: any) {
+    public async createSession(data: KeyedObject) {
         const json = Util.sessionCreateToJSON(data);
 
         return await this.sendRequest({
@@ -54,7 +56,9 @@ class Scrappey {
         }
     }
 
-    public async get(data: any) {
+    public async get(data: KeyedObject) {
+        Preconditions.validateRequestData(data);
+
         const { url } = data;
         
         if (!url) {
@@ -69,7 +73,9 @@ class Scrappey {
         });
     }
 
-    public async post(data: any) {
+    public async post(data: KeyedObject) {
+        Preconditions.validateRequestData(data);
+
         const json = Util.postRequestToJSON(data);
 
         return await this.sendRequest({
@@ -78,7 +84,7 @@ class Scrappey {
         });
     }
 
-    public async sendRequest(dataOptions: any) {
+    public async sendRequest(dataOptions: KeyedObject) {
         const { endpoint } = dataOptions;
 
         if (!endpoint) {

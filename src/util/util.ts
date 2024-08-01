@@ -1,5 +1,7 @@
+import { KeyedObject } from "../types/typeUtil.js";
+
 export class Util {
-    public static sessionCreateToJSON(data: any): any {
+    public static sessionCreateToJSON(data: KeyedObject): any {
         const jsonData = this.cloneObject(data) as any;
 
         if (data.proxyData) {
@@ -14,7 +16,7 @@ export class Util {
         return jsonData;
     }
 
-    public static getRequestToJSON(data: any): any {
+    public static getRequestToJSON(data: KeyedObject): any {
         const jsonData = this.cloneObject(data) as any;
 
         if (data.proxyData) {
@@ -29,7 +31,7 @@ export class Util {
         return jsonData;
     }
 
-    public static postRequestToJSON(data: any): any {
+    public static postRequestToJSON(data: KeyedObject): any {
         const jsonData = this.cloneObject(data) as any;
 
         if (data?.customHeaders?.content_type === "application/json" && typeof data?.postData === "object") {
@@ -48,7 +50,7 @@ export class Util {
         return jsonData;
     }
 
-    private static proxyDataToJSON(data: any): any {
+    private static proxyDataToJSON(data: KeyedObject): any {
         const jsonData = {} as any;
         
         if (data.type === "custom") {
