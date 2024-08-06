@@ -260,7 +260,7 @@ declare module "scrappey-wrapper-typed" {
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
         | ElementInteractionAction & { type: "dropdown", index: number, value?: never }
         | ElementInteractionAction & { type: "dropdown", value: string, index?: never }
-        | { type: "if", condition: string, then: BrowserAction[], or?: BaseBrowserAction[] };
+        | { type: "if", condition: string, then: BrowserAction[], or?: BrowserAction[] };
 
     export enum ProxyType {
         Residential = "residential",
