@@ -259,7 +259,8 @@ declare module "scrappey-wrapper-typed" {
         | Partial<ElementInteractionAction> & { type: "scroll", repeat?: number, delayMs?: number }
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
         | ElementInteractionAction & { type: "dropdown", index: number, value?: never }
-        | ElementInteractionAction & { type: "dropdown", value: string, index?: never };
+        | ElementInteractionAction & { type: "dropdown", value: string, index?: never }
+        | { type: "if", condition: string, then: BrowserAction[], or?: BaseBrowserAction[] };
 
     export enum ProxyType {
         Residential = "residential",
