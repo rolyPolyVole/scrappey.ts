@@ -30,10 +30,10 @@ class Scrappey {
     }
 
     public async isSessionActive(session: string) {
-        return await this.sendRequest({
+        return (await this.sendRequest({
             endpoint: "sessions.active",
             session: session
-        });
+        })).active;
     }
 
     public async getBalance() {
