@@ -50,7 +50,7 @@ class Scrappey {
 
         try {
             const response = await axios(url, options);
-            return response.data;
+            return response.data.balance;
         } catch (error) {
             throw error;
         }
