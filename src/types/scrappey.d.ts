@@ -546,12 +546,12 @@ declare module "scrappey-wrapper-typed" {
          * Returns whether a session is currently active
          * @param {string} session The session UUID 
          */
-        public isSessionActive(session: string): Promise<SessionActiveData>;
+        public isSessionActive(session: string): Promise<boolean>;
 
         /**
          * Returns your remaining API tokens
          */
-        public getBalance(): Promise<RemainingBalanceData>;
+        public getBalance(): Promise<number>;
 
         /**
          * Sends a GET request
