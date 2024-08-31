@@ -328,6 +328,8 @@ declare module "scrappey-wrapper-typed" {
         noDriver?: boolean;
     }
 
+    type AllGetResponseDataKeys = `${keyof (BaseGetResponseData & WithVideoURL<BrowserRequest> & WithJSOutput<BrowserRequest> & WithBase64Response<BrowserRequest>)["solution"]}`;
+
     export type BaseHTTPRequest = {
         /**
          * The page URL to navigate to
@@ -360,7 +362,7 @@ declare module "scrappey-wrapper-typed" {
         /**
          * Filter the response data to only include the specified keys
          */
-        filter?: keyof BaseGetResponseData[];
+        filter?: AllGetResponseDataKeys[];
     }
 
     export type BaseGetRequest = {
@@ -409,10 +411,6 @@ declare module "scrappey-wrapper-typed" {
          * If the provided URL is directly to a PDF file or an image, returns that file in base64 format under `base64Response`
          */
         base64?: boolean;
-        /**
-         * Filter the response data to only include the specified keys
-         */
-        filter?: keyof BaseGetResponseData[];
     }
 
     export enum RequestType {
