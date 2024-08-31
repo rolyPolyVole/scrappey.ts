@@ -260,7 +260,9 @@ declare module "scrappey-wrapper-typed" {
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
         | ElementInteractionAction & { type: "dropdown", index: number, value?: never }
         | ElementInteractionAction & { type: "dropdown", value: string, index?: never }
-        | { type: "if", condition: string, then: BrowserAction[], or?: BrowserAction[] };
+        | { type: "if", condition: string, then: BrowserAction[], or?: BrowserAction[] }
+        | { type: "while", condition: string, then: BrowserAction[], maxAttempts?: number }
+        | { type: "wait_for_load_state", waitForLoadState: "domcontentloaded" | "networkidle" | "load" };
 
     export enum ProxyType {
         Residential = "residential",
