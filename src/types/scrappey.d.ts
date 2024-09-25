@@ -328,7 +328,7 @@ declare module "scrappey-wrapper-typed" {
         noDriver?: boolean;
     }
 
-    type AllGetResponseDataKeys = `${keyof (BaseGetResponseData & WithVideoURL<BrowserRequest> & WithJSOutput<BrowserRequest> & WithBase64Response<BrowserRequest>)["solution"]}`;
+    type AllGetResponseDataKeys = `${keyof (BaseGetResponseData & VideoURL & JSOutput & Base64Response)["solution"]}`;
 
     export type BaseHTTPRequest = {
         /**
@@ -491,33 +491,39 @@ declare module "scrappey-wrapper-typed" {
 
     type InsertSolution<T extends KeyedObject> = Insert<BaseGetResponseData, "solution", T>;
 
+    type VideoURL = InsertSolution<{
+        /**
+         * A link to a .webm file of the recorded debugging video
+         */
+        readonly videoUrl: string; 
+    }>;
+
     type WithVideoURL<R extends BrowserRequest> = HasDefinedKV<R, "video", true> extends true
-        ? InsertSolution<{
-            /**
-             * A link to a .webm file of the recorded debugging video
-             */
-            readonly videoUrl: string; 
-        }>
+        ? VideoURL
         : R;
+
+    type JSOutput = InsertSolution<{
+        /**
+         * A list of javascript outputs ordered in the same way as they were given in `browserActions`
+         * 
+         * Note: `when: beforeload` actions have priority
+         */
+        readonly javascriptReturn: any[]; 
+    }>;
 
     type WithJSOutput<R extends BrowserRequest> = HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-        ? InsertSolution<{
-            /**
-             * A list of javascript outputs ordered in the same way as they were given in `browserActions`
-             * 
-             * Note: `when: beforeload` actions have priority
-             */
-            readonly javascriptReturn: any[]; 
-        }>
+        ? JSOutput
         : R;
 
+    type Base64Response = InsertSolution<{
+        /**
+         * The base64 format of the image or pdf provided in the URL
+         */
+        readonly base64Response: string;
+    }>;
+
     export type WithBase64Response<R extends BrowserRequest> = HasDefinedKV<R, "base64", true> extends true
-        ? InsertSolution<{
-            /**
-             * The base64 format of the image or pdf provided in the URL
-             */
-            readonly base64Response: string;
-        }>
+        ? Base64Response
         : R;
 
     export type GetResponseData<R extends GetRequest> = R extends BrowserRequest
