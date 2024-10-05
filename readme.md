@@ -71,13 +71,13 @@ async function run() {
 
     //Don't know what data to use in the request? Check out our Request Builder
     //https://app.scrappey.com/#/builder
-    //It will auotmatically generate the data for you with the input you provided
+    //It will automatically generate the data for you with the input you provided
     const get = await initialize.get({
         session: session,
         url: 'https://httpbin.rs/get'
     })
 
-    //Only successfull requests will take balance from your account
+    //Only successful requests will take balance from your account
     //This can verified by looking at the solution verified field
     console.log(`Request was successful and took balance: ${get.solution.verified}`)
 
@@ -131,8 +131,8 @@ run().then((data) => console.log(data)).catch((err) => console.error(err))
   },
   "cookiejar": [
     {
-      "key": "cookiekey",
-      "value": "cookievalue",
+      "key": "cookieKey",
+      "value": "cookieValue",
       "domain": "httpbin.rs",
       "path": "/"
     }
@@ -158,8 +158,8 @@ to add a cookiejar
   },
   "cookiejar": [
     {
-      "key": "cookiekey",
-      "value": "cookievalue",
+      "key": "cookieKey",
+      "value": "cookieValue",
       "domain": "httpbin.rs",
       "path": "/"
     }
