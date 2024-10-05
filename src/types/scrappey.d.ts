@@ -65,7 +65,7 @@ declare module "scrappey-wrapper-typed" {
         Bangladesh = "Bangladesh",
         Belarus = "Belarus",
         Belgium = "Belgium",
-        BosniaandHerzegovina = "BosniaandHerzegovina",
+        BosniaAndHerzegovina = "BosniaandHerzegovina",
         Brazil = "Brazil",
         BritishVirginIslands = "BritishVirginIslands",
         Brunei = "Brunei",
@@ -95,7 +95,7 @@ declare module "scrappey-wrapper-typed" {
         Greece = "Greece",
         Guatemala = "Guatemala",
         Guyana = "Guyana",
-        HashemiteKingdomofJordan = "HashemiteKingdomofJordan",
+        HashemiteKingdomOfJordan = "HashemiteKingdomofJordan",
         HongKong = "HongKong",
         Hungary = "Hungary",
         India = "India",
@@ -141,8 +141,8 @@ declare module "scrappey-wrapper-typed" {
         Portugal = "Portugal",
         PuertoRico = "PuertoRico",
         Qatar = "Qatar",
-        RepublicofLithuania = "RepublicofLithuania",
-        RepublicofMoldova = "RepublicofMoldova",
+        RepublicOfLithuania = "RepublicofLithuania",
+        RepublicOfMoldova = "RepublicofMoldova",
         Romania = "Romania",
         Russia = "Russia",
         SaudiArabia = "SaudiArabia",
@@ -165,7 +165,7 @@ declare module "scrappey-wrapper-typed" {
         Taiwan = "Taiwan",
         Tajikistan = "Tajikistan",
         Thailand = "Thailand",
-        TrinidadandTobago = "TrinidadandTobago",
+        TrinidadAndTobago = "TrinidadandTobago",
         Tunisia = "Tunisia",
         Turkey = "Turkey",
         Uganda = "Uganda",
@@ -227,7 +227,7 @@ declare module "scrappey-wrapper-typed" {
         cssSelector: string;
     }
 
-    export enum CatpchaType {
+    export enum CaptchaType {
         Custom = "custom",
         Turnstile = "turnstile",
         PerimeterX = "perimeterx",
@@ -253,8 +253,8 @@ declare module "scrappey-wrapper-typed" {
         | BaseBrowserAction & ThrowableAction & { type: "goto", url: string }
         | Omit<ElementInteractionAction, "wait"> & { type: "wait_for_selector", timeout: number }
         | Required<WaitableAction> & ThrowableAction & BaseBrowserAction & { type: "wait" }
-        | ThrowableAction & { type: "solve_captcha", captcha: Omit<CatpchaType, "Custom"> | Omit<EnumValues<typeof CatpchaType>, "custom"> }
-        | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CatpchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
+        | ThrowableAction & { type: "solve_captcha", captcha: Omit<CaptchaType, "Custom"> | Omit<EnumValues<typeof CaptchaType>, "custom"> }
+        | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CaptchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
         | { type: "execute_js", code: string }
         | Partial<ElementInteractionAction> & { type: "scroll", repeat?: number, delayMs?: number }
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
