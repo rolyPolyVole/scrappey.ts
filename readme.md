@@ -187,7 +187,7 @@ For more information, please visit the [official Scrappey documentation](https:/
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](./LICENSE).
 
 ## Additional Tags
 
