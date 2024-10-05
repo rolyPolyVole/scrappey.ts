@@ -19,7 +19,7 @@ GitHub: [https://github.com/](https://github.com/rolyPolyVole/scrappey.ts)
 Use npm to install the Scrappey library. 💻
 
 ```shell
-npm install scrappey-wrapper
+npm install scrappey-wrapper-typed
 ```
 
 ## Usage
