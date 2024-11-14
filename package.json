@@ -8,8 +8,8 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "rolyPolyVole",
-    "contributors": ["Slqmy"],
-    "license": "ISC",
+    "contributors": ["Esoteric Enderman"],
+    "license": "MIT",
     "dependencies": {
         "axios": "^1.4.0"
     },

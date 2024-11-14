@@ -1,11 +1,11 @@
-# 🤖 Scrappey Wrapper - Data Extraction Made Easy                 
+# 🤖 Scrappey Wrapper - Data Extraction Made Easy                     
  
 Introducing Scrappey, your comprehensive website scraping solution provided by Scrappey.com. With Scrappey's powerful and user-friendly API, you can effortlessly retrieve data from websites, including those protected by Cloudflare/Datadome. Join Scrappey today and revolutionize your data extraction process. 🚀 Now with caching!          
 
 **Disclaimer: Please ensure that your web scraping activities comply with the website's terms of service and legal regulations. Scrappey is not responsible for any misuse or unethical use of the library. Use it responsibly and respect the website's policies.**   
 
 Website: [https://scrappey.com/](https://scrappey.com/)
-GitHub: [https://github.com/](https://github.com/pim97/scrappey.js)
+GitHub: [https://github.com/](https://github.com/rolyPolyVole/scrappey.ts)
 
 ## Topics
 
@@ -19,7 +19,7 @@ GitHub: [https://github.com/](https://github.com/pim97/scrappey.js)
 Use npm to install the Scrappey library. 💻
 
 ```shell
-npm install scrappey-wrapper
+npm install scrappey-wrapper-typed
 ```
 
 ## Usage
@@ -71,13 +71,13 @@ async function run() {
 
     //Don't know what data to use in the request? Check out our Request Builder
     //https://app.scrappey.com/#/builder
-    //It will auotmatically generate the data for you with the input you provided
+    //It will automatically generate the data for you with the input you provided
     const get = await initialize.get({
         session: session,
         url: 'https://httpbin.rs/get'
     })
 
-    //Only successfull requests will take balance from your account
+    //Only successful requests will take balance from your account
     //This can verified by looking at the solution verified field
     console.log(`Request was successful and took balance: ${get.solution.verified}`)
 
@@ -131,8 +131,8 @@ run().then((data) => console.log(data)).catch((err) => console.error(err))
   },
   "cookiejar": [
     {
-      "key": "cookiekey",
-      "value": "cookievalue",
+      "key": "cookieKey",
+      "value": "cookieValue",
       "domain": "httpbin.rs",
       "path": "/"
     }
@@ -158,8 +158,8 @@ to add a cookiejar
   },
   "cookiejar": [
     {
-      "key": "cookiekey",
-      "value": "cookievalue",
+      "key": "cookieKey",
+      "value": "cookieValue",
       "domain": "httpbin.rs",
       "path": "/"
     }
@@ -187,7 +187,7 @@ For more information, please visit the [official Scrappey documentation](https:/
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](./LICENSE).
 
 ## Additional Tags
 
