@@ -65,7 +65,7 @@ declare module "scrappey-wrapper-typed" {
         Bangladesh = "Bangladesh",
         Belarus = "Belarus",
         Belgium = "Belgium",
-        BosniaAndHerzegovina = "BosniaandHerzegovina",
+        BosniaandHerzegovina = "BosniaandHerzegovina",
         Brazil = "Brazil",
         BritishVirginIslands = "BritishVirginIslands",
         Brunei = "Brunei",
@@ -95,7 +95,7 @@ declare module "scrappey-wrapper-typed" {
         Greece = "Greece",
         Guatemala = "Guatemala",
         Guyana = "Guyana",
-        HashemiteKingdomOfJordan = "HashemiteKingdomofJordan",
+        HashemiteKingdomofJordan = "HashemiteKingdomofJordan",
         HongKong = "HongKong",
         Hungary = "Hungary",
         India = "India",
@@ -141,8 +141,8 @@ declare module "scrappey-wrapper-typed" {
         Portugal = "Portugal",
         PuertoRico = "PuertoRico",
         Qatar = "Qatar",
-        RepublicOfLithuania = "RepublicofLithuania",
-        RepublicOfMoldova = "RepublicofMoldova",
+        RepublicofLithuania = "RepublicofLithuania",
+        RepublicofMoldova = "RepublicofMoldova",
         Romania = "Romania",
         Russia = "Russia",
         SaudiArabia = "SaudiArabia",
@@ -165,7 +165,7 @@ declare module "scrappey-wrapper-typed" {
         Taiwan = "Taiwan",
         Tajikistan = "Tajikistan",
         Thailand = "Thailand",
-        TrinidadAndTobago = "TrinidadandTobago",
+        TrinidadandTobago = "TrinidadandTobago",
         Tunisia = "Tunisia",
         Turkey = "Turkey",
         Uganda = "Uganda",
@@ -227,7 +227,7 @@ declare module "scrappey-wrapper-typed" {
         cssSelector: string;
     }
 
-    export enum CaptchaType {
+    export enum CatpchaType {
         Custom = "custom",
         Turnstile = "turnstile",
         PerimeterX = "perimeterx",
@@ -253,8 +253,8 @@ declare module "scrappey-wrapper-typed" {
         | BaseBrowserAction & ThrowableAction & { type: "goto", url: string }
         | Omit<ElementInteractionAction, "wait"> & { type: "wait_for_selector", timeout: number }
         | Required<WaitableAction> & ThrowableAction & BaseBrowserAction & { type: "wait" }
-        | ThrowableAction & { type: "solve_captcha", captcha: Omit<CaptchaType, "Custom"> | Omit<EnumValues<typeof CaptchaType>, "custom"> }
-        | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CaptchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
+        | ThrowableAction & { type: "solve_captcha", captcha: Omit<CatpchaType, "Custom"> | Omit<EnumValues<typeof CatpchaType>, "custom"> }
+        | ThrowableAction & ElementInteractionAction & { type: "solve_captcha", captcha: CatpchaType.Custom | "custom", inputSelector: string, clickSelector?: string }
         | { type: "execute_js", code: string }
         | Partial<ElementInteractionAction> & { type: "scroll", repeat?: number, delayMs?: number }
         | { type: "keyboard", value: KeyboardAction | EnumValues<typeof KeyboardAction> }
@@ -512,28 +512,8 @@ declare module "scrappey-wrapper-typed" {
 
     type WithVideoURL<R extends BrowserRequest> = HasDefinedKV<R, "video", true> extends true
         ? VideoURL
-    type VideoURL = InsertSolution<{
-        /**
-         * A link to a .webm file of the recorded debugging video
-         */
-        readonly videoUrl: string; 
-    }>;
-
-    type WithVideoURL<R extends BrowserRequest> = HasDefinedKV<R, "video", true> extends true
-        ? VideoURL
         : R;
 
-    type JSOutput = InsertSolution<{
-        /**
-         * A list of javascript outputs ordered in the same way as they were given in `browserActions`
-         * 
-         * Note: `when: beforeload` actions have priority
-         */
-        readonly javascriptReturn: any[]; 
-    }>;
-
-    type WithJSOutput<R extends BrowserRequest> = HasObjectWithKVRecord<R["browserActions"], "type", "execute_js"> extends true
-        ? JSOutput
     type JSOutput = InsertSolution<{
         /**
          * A list of javascript outputs ordered in the same way as they were given in `browserActions`
