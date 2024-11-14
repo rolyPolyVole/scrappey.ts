@@ -328,7 +328,7 @@ declare module "scrappey-wrapper-typed" {
         noDriver?: boolean;
     }
 
-    type AllGetResponseDataKeys = `${keyof (BaseGetResponseData & VideoURL & JSOutput & Base64Response)["solution"]}`;
+    type AllGetResponseDataKeys = `${keyof (BaseGetResponseData & VideoURL & JSOutput & Base64Response & AIResponse)["solution"]}`;
 
     export type BaseHTTPRequest = {
         /**
@@ -388,13 +388,25 @@ declare module "scrappey-wrapper-typed" {
          */
         automaticallySolveCaptchas?: boolean;
         /**
-         * If set to true, uses ChatGPT 3.5 to parse the page data using the query specified in `properties`
+         * If set to true, uses ChatGPT 3.5 to parse the page data into the structure provided in `structure`
          */
         autoparse?: boolean;
         /**
-         * If `autoparse` is true, use this to specify the query to the AI
+         * If `autoparse` is true, use this to specify the structure of the response of the AI. Will be returned in the response under `solution.autoparse`
+         * @example
+         * ```js
+         * structure: {
+         *   product_title: "str",
+         *   product_price: "float",
+         *   in_stock: "bool"
+         * }
+         * ```
          */
-        properties?: string;
+        structure?: KeyedObject;
+        /**
+         * The API key to use for the AI. If none is provided, a key is provided by Scrappey and the price increases to 5 tokens.
+         */
+        api_key?: string;
         /**
          * Whether to record a video of the actions performed on the page (A link will be returned in the response, under `videoUrl`)
          */
@@ -526,8 +538,20 @@ declare module "scrappey-wrapper-typed" {
         ? Base64Response
         : R;
 
+
+    type AIResponse = InsertSolution<{
+        /**
+         * The AI response to the query or structure provided in the request
+         */
+        autoparse: any;
+    }>;
+
+    type WithAIResponse<R extends BrowserRequest> = HasDefinedKV<R, "autoparse", true> extends true
+        ? AIResponse
+        : R;
+
     export type GetResponseData<R extends GetRequest> = R extends BrowserRequest
-            ? BaseGetResponseData & WithVideoURL<R> & WithJSOutput<R> & WithBase64Response<R>
+            ? BaseGetResponseData & WithVideoURL<R> & WithJSOutput<R> & WithBase64Response<R> & WithAIResponse<R>
             : BaseGetResponseData;
 
     export type SessionActiveData = {
